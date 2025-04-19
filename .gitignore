@@ -1,0 +1,8 @@
+@eaDir
+*.sql
+*.zip
+
+/vendor/
+/cache/*
+/administrator/cache/*
+/images/*
