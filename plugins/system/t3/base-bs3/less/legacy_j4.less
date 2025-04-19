@@ -1,0 +1,548 @@
+// BOOTSTRAP LEGACY
+// ----------------------------------
+.sr-only,
+.visually-hidden,
+.visually-hidden-focusable:not(:focus):not(:focus-within) {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.btn-close {
+  background: #f0f0f0;
+  border: 0;
+  border-radius: 50%;
+  color: #999;
+  height: 32px;
+  text-align: center;
+  width: 32px;
+  margin-left: auto;
+  appearance: none;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+
+  &::before {
+    content: "\f00d";
+    display: block;
+    font-family: FontAwesome3 !important;
+    font-size: 16px;
+  }
+
+  &:hover {
+    cursor: pointer;
+    color: #666;
+  }
+}
+
+// Calendar field
+.field-calendar {
+  .input-group {
+    input[type="text"] {
+      border-right: 0;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .btn {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+  }
+
+  a {
+    &:hover, &:focus, &:active {
+      cursor: pointer;
+    }
+  }
+}
+
+joomla-field-custom.field-custom-wrapper {
+  .input-group {
+    display: flex;
+    align-items: stretch;
+
+    input[type="text"] {
+      border-right: 0;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    .input-group-btn {
+      display: flex;
+      align-items: stretch;
+
+      .btn {
+        border-radius: 0;
+
+        &.button-select {
+          background-color: #2f7d32;
+          border-color: #2f7d32;
+
+          &:hover, &:focus, &:active {
+            background-color: #296e2c;
+            border-color: #296e2c;
+          }
+        }
+
+        &.button-clear {          
+          background-color: #c52827;
+          border: 1px solid #c52827;
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+          color: #fff;
+
+          &:hover, &:focus, &:active {
+            background-color: #ae2322;
+            border-color: #c52827;
+          }
+        }
+
+        span {
+          line-height: 38px;
+        }
+      }
+    }
+  }
+}
+
+// Input group
+// -----------
+.input-group {
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  width: 100%;
+
+  .form-control {
+    width: auto;
+  }
+
+  .btn {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+  }
+}
+
+// Tag category
+.com-tags-tag.tag-category {
+  .filters {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.users-profile-custom-joomlatoken {
+  .dl-horizontal {
+    dd {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+      width: 400px;
+    }
+  }
+}
+
+// Smart search
+// ------------
+.com-finder {
+  .form-inline > label {
+    margin-bottom: @t3-global-margin / 2;
+  }
+
+  .input-group {
+    display: flex;
+    align-items: center;
+
+    .btn:last-of-type {
+      border-radius: 5px;
+      margin-left: @t3-global-margin / 2;
+    }
+  }
+
+}
+
+// Compatible with Joomla 4
+.j40 {
+  // Media field
+  joomla-field-media {
+    .input-group {
+      max-width: 356px;
+
+      input[type="text"] {
+        border-right: 0;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      .form-control {
+        border-top-left-radius: 0;
+        flex: 1;
+      }
+
+      .btn {
+        border-top-right-radius: 0;
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+      .icon-times::before {
+        content: "\f00d";
+        display: inline-block;
+        font-weight: FontAwesome;
+        font-size: 16px;
+      }
+    }
+  }
+
+  // Control label
+  .form-control-feedback {
+    font-size: 12px;
+    font-weight: 400;
+    top: auto;
+    bottom: -28px;
+    line-height: 1;
+    width: auto;
+    white-space: nowrap;
+  }
+
+  // COMPONENTS
+  // ----------------------
+  // Newsfeed
+  .com-newsfeeds-newsfeed__items {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    li {
+      border-bottom: 1px solid @t3-border-color;
+      padding: @t3-global-padding 0;
+    }
+
+    .feed-link {
+      margin-bottom: @t3-global-margin;
+    }
+  }
+
+  figure {
+    margin-bottom: @t3-global-margin;
+
+    img {
+      max-width: 100%;
+    }
+  }
+
+  // Contact form
+  #com-contact-form {
+    margin-bottom: @t3-global-margin;
+  }
+
+  // Request confirm
+  .request-confirm {
+    fieldset {
+      legend {
+        font-size: 16px;
+        padding-bottom: @t3-global-padding;
+      }
+    }
+  }
+
+  // Article assign
+  .article-aside {
+    .icons {
+      float: right;
+
+      a {
+        display: block;
+        position: relative;
+      }
+
+      [role="tooltip"] {
+        background-color: rgba(0,0,0,0.6);
+        border-radius: 3px;
+        color: #fff;
+        display: none;
+        padding: 2px 4px;
+        position: absolute;
+        white-space: nowrap;
+        right: 0;
+        max-width: none;
+      }
+
+      &:hover {
+        [role="tooltip"] {
+          display: block;
+        }
+      }
+    }
+  }
+
+  .password-group {
+    .input-group {
+      display: flex;
+      flex-wrap: nowrap;
+
+      input {
+        width: auto;
+      }
+    }
+  }
+
+
+  // Edit article
+  // ------------
+  .edit.item-page {
+    .choices__inner {
+      padding-right: 6px;
+
+      button {
+        background-color: rgba(255,255,255,0.3);
+        border-radius: 8px;
+        border: 0;
+        margin-left: 6px;
+        padding: 1px 6px;
+
+        &:hover, &:focus, &:active {
+          background-color: rgba(255,255,255,0.5);
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
+// Edit profile
+// ------------
+.profile-edit {
+  .password-group .input-group input {
+    min-width: 268px;
+  }
+
+  .control-group {
+    margin-top: @t3-global-margin;
+
+    .controls {
+      float: none;
+    }
+  }
+}
+
+// Modal
+// -------------------
+.j40,
+.j42 {
+  .joomla-modal.show {
+    background-color: rgba(0,0,0,0.5);
+    opacity: 1;
+
+    .modal-dialog {
+      top: 50%;
+      transform: translateY(-50%);
+
+      .modal-content {
+        border-radius: 5px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      }
+    }
+  }
+
+  .jviewport-width80 {
+    width: 80vw;
+  }
+
+  .jviewport-height70 {
+    height: 70vh;
+  }
+
+  .modal-header {
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    padding: 12px 16px;
+    justify-content: space-between;
+
+    h3 {
+      font-size: 24px;
+      font-weight: 500;
+    }
+  }
+
+  .modal-body {
+    overflow: hidden;
+    padding: 0;
+  }
+
+  .iframe {
+    border: 0;
+    height: 100%;
+    width: 100%;
+  }
+
+  [role=tooltip]:not(.show) {
+    right: 5em;
+    z-index: 1070;
+    display: none;
+    max-width: 100%;
+    padding: .5em;
+    margin: .5em;
+    color: #000;
+    text-align: start;
+    background: #fff;
+    border: 1px solid #6d757e;
+    border-radius: .25rem;
+  }
+
+  .container-popup [id="filter[search]-desc"] {
+    top: 100%;
+    bottom: auto;
+  }
+}
+
+
+// Front-end edit
+// --------------
+.j40 {
+  .btn-toolbar,
+  .js-stools-container-filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: center;
+  }
+
+  .ordering-select {
+    display: flex;
+    align-items: center;
+  }
+
+  .btn-group {
+    margin-right: @t3-global-margin / 2;
+  }
+
+  .js-stools-container-filters {
+    display: none;
+    margin-top: @t3-global-margin;
+
+    &.js-stools-container-filters-visible {
+      display: flex;
+    }
+
+    .js-stools-field-filter {
+      margin-right: @t3-global-margin / 2;
+
+      &:last-child {
+        margin-right: 0;
+      }
+    }
+
+    .choices {
+      .choices__inner {
+        border: 0;
+        min-height: auto;
+        padding: 0;
+
+        input {
+          margin-bottom: 0;
+        }
+      }
+    }
+  }
+
+  #contact-form {
+    label.required {
+      position: relative;
+
+      .form-control-feedback {
+        background: #fff;
+        border-radius: .5rem;
+        box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        border: 1px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 .5rem;
+        right: auto;
+        left: calc(100% + 32px);
+        bottom: calc(100% + 32px);
+      }
+    }
+  }
+}
+
+
+.contentpane {
+  .subhead {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 12px;
+
+    .btn-toolbar {
+      display: flex;
+      gap: @t3-global-margin / 2;
+      margin: 0;
+
+      &::before,
+      &::after {
+        display: none;
+      }
+    }
+
+    joomla-toolbar-button {
+    }
+  }
+
+  .media-sidebar {
+    border-right: 1px solid #ddd;
+  }
+
+  .media-toolbar {
+    border-bottom: 1px solid #ddd;
+    margin-right: 20px;
+    padding-left: 20px;
+
+    .media-toolbar-icon {
+      border-left: 1px solid #ddd;
+    }
+
+    .icon-search-minus,
+    .icon-search-plus {
+      font-family: FontAwesome3;
+
+      &::before {
+        content: "\f010";
+        display: block;
+        font-size: 16px;
+      }
+    }
+
+    .icon-search-plus::before {
+      content: "\f00e";
+    }
+  }
+}
+
+.com_contact {
+  fieldset.filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .com-contact-featured__filter {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .display-limit {
+    margin: 0;
+  }
+
+  table.category {
+    margin-top: 2rem;
+  }
+}

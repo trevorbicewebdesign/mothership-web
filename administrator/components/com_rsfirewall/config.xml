@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+    <fieldset name="permissions" label="JCONFIG_PERMISSIONS_LABEL" description="JCONFIG_PERMISSIONS_DESC">
+    <field name="rules" type="rules" label="JCONFIG_PERMISSIONS_LABEL" filter="rules" component="com_rsfirewall" section="component">
+        <action name="core.admin" title="JACTION_ADMIN" description="JACTION_ADMIN_COMPONENT_DESC" />
+        <action name="core.manage" title="JACTION_MANAGE" description="JACTION_MANAGE_COMPONENT_DESC" />
+        <action name="check.run" title="COM_RSFIREWALL_PERMISSION_SYSTEM_CHECK" description="COM_RSFIREWALL_PERMISSION_SYSTEM_CHECK_DESC" />
+        <action name="dbcheck.run" title="COM_RSFIREWALL_PERMISSION_DB_CHECK" description="COM_RSFIREWALL_PERMISSION_DB_CHECK_DESC" />
+        <action name="logs.view" title="COM_RSFIREWALL_PERMISSION_VIEW_LOGS" description="COM_RSFIREWALL_PERMISSION_VIEW_LOGS_DESC" />
+        <action name="lists.manage" title="COM_RSFIREWALL_PERMISSION_MANAGE_LISTS" description="COM_RSFIREWALL_PERMISSION_MANAGE_LISTS_DESC" />
+        <action name="exceptions.manage" title="COM_RSFIREWALL_PERMISSION_MANAGE_EXCEPTIONS" description="COM_RSFIREWALL_PERMISSION_MANAGE_EXCEPTIONS_DESC" />
+    </field>
+    </fieldset>
+</config>

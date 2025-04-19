@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<form>
+	<fields name="filter">
+		<field
+				name="search"
+				type="text"
+				label="COM_RSFIREWALL_FILTER_SEARCH_LABEL"
+				description="COM_RSFIREWALL_FILTER_SEARCH_DESC"
+				hint="JSEARCH_FILTER"
+		/>
+
+		<field
+				name="level"
+				type="list"
+				onchange="this.form.submit();"
+				default=""
+		>
+			<option value="">COM_RSFIREWALL_SELECT_LEVEL</option>
+			<option value="low">COM_RSFIREWALL_LEVEL_LOW</option>
+			<option value="medium">COM_RSFIREWALL_LEVEL_MEDIUM</option>
+			<option value="high">COM_RSFIREWALL_LEVEL_HIGH</option>
+			<option value="critical">COM_RSFIREWALL_LEVEL_CRITICAL</option>
+		</field>
+
+		<field
+				name="blocked_status"
+				type="list"
+				onchange="this.form.submit();"
+				default=""
+		>
+			<option value="">COM_RSFIREWALL_SELECT_BLOCKED_STATUS</option>
+			<option value="-1">COM_RSFIREWALL_NOT_BLOCKED</option>
+			<option value="1">COM_RSFIREWALL_BLOCKED</option>
+		</field>
+
+		<field
+				name="country_code"
+				type="list"
+				onchange="this.form.submit();"
+				default=""
+		>
+			<option value="">COM_RSFIREWALL_SELECT_COUNTRY_CODE</option>
+		</field>
+	</fields>
+
+	<fields name="list">
+		<field
+				name="fullordering"
+				type="list"
+				label="JGLOBAL_SORT_BY"
+				onchange="this.form.submit();"
+				default="logs.date DESC"
+		>
+			<option value="">JGLOBAL_SORT_BY</option>
+			<option value="logs.level ASC">COM_RSFIREWALL_ALERT_LEVEL_ORDER_ASC</option>
+			<option value="logs.level DESC">COM_RSFIREWALL_ALERT_LEVEL_ORDER_DESC</option>
+			<option value="logs.date ASC">COM_RSFIREWALL_LOG_DATE_EVENT_ORDER_ASC</option>
+			<option value="logs.date DESC">COM_RSFIREWALL_LOG_DATE_EVENT_ORDER_DESC</option>
+			<option value="logs.ip ASC">COM_RSFIREWALL_LOG_IP_ADDRESS_ORDER_ASC</option>
+			<option value="logs.ip DESC">COM_RSFIREWALL_LOG_IP_ADDRESS_ORDER_DESC</option>
+			<option value="logs.user_id ASC">COM_RSFIREWALL_LOG_USER_ID_ORDER_ASC</option>
+			<option value="logs.user_id DESC">COM_RSFIREWALL_LOG_USER_ID_ORDER_DESC</option>
+			<option value="logs.username ASC">COM_RSFIREWALL_LOG_USERNAME_ORDER_ASC</option>
+			<option value="logs.username DESC">COM_RSFIREWALL_LOG_USERNAME_ORDER_DESC</option>
+			<option value="logs.page ASC">COM_RSFIREWALL_LOG_PAGE_ORDER_ASC</option>
+			<option value="logs.page DESC">COM_RSFIREWALL_LOG_PAGE_ORDER_DESC</option>
+			<option value="logs.referer ASC">COM_RSFIREWALL_LOG_REFERER_ORDER_ASC</option>
+			<option value="logs.referer DESC">COM_RSFIREWALL_LOG_REFERER_ORDER_DESC</option>
+		</field>
+
+		<field
+				name="limit"
+				type="limitbox"
+				label="JGLOBAL_LIST_LIMIT"
+				default="25"
+				onchange="this.form.submit();"
+		/>
+	</fields>
+</form>

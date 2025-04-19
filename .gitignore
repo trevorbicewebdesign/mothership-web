@@ -4,5 +4,15 @@
 
 /vendor/
 /cache/*
-/administrator/cache/*
+!/cache/index.html
+
+/administrator/logs/*
+!/administrator/logs/index.html
+/installation
+!/administrator/cache/index.html
 /images/*
+!/images/index.html
+/tmp/*
+!/tmp/index.html
+/logs/*
+!/logs/index.html

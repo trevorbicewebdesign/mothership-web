@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="2.5.0" type="plugin" group="system" method="upgrade">
+	<name>System - RSFirewall! Active Scanner</name>
+	<creationDate>October 2012</creationDate>
+	<author>RSJoomla!</author>
+	<copyright>(c) 2009 - 2024 RSJoomla!</copyright>
+	<license>https://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
+	<authorEmail>support@rsjoomla.com</authorEmail>
+	<authorUrl>https://www.rsjoomla.com</authorUrl>
+	<version>1.4.0</version>
+	<description>PLG_SYSTEM_RSFIREWALL_DESC</description>
+
+	<updateservers>
+        <server type="extension" priority="1" name="RSFirewall! Active Scanner">https://www.rsjoomla.com/updates/com_rsfirewall/Other/plg_rsfirewall.xml</server>
+    </updateservers>
+
+	<languages>
+		<language tag="en-GB">language/en-GB/en-GB.plg_system_rsfirewall.sys.ini</language>
+	</languages>
+	<files>
+		<filename plugin="rsfirewall">rsfirewall.php</filename>
+		<filename>index.html</filename>
+	</files>
+</extension>

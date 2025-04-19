@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" client="administrator" version="2.5.0" position="cpanel" method="upgrade">
+	<name>RSFirewall! Control Panel Module</name>
+	<creationDate>October 2012</creationDate>
+	<author>RSJoomla!</author>
+	<copyright>(c) 2009 - 2024 RSJoomla!</copyright>
+	<license>https://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
+	<authorEmail>support@rsjoomla.com</authorEmail>
+	<authorUrl>https://www.rsjoomla.com</authorUrl>
+	<version>1.4.0</version>
+	<description>MOD_RSFIREWALL_DESC</description>
+
+	<updateservers>
+        <server type="extension" priority="1" name="RSFirewall! Control Panel Module">https://www.rsjoomla.com/updates/com_rsfirewall/Other/mod_rsfirewall.xml</server>
+    </updateservers>
+
+	<config>
+		<fields name="params" addfieldpath="/administrator/components/com_rsform/models/fields">
+			<fieldset name="basic">
+				<field name="show_grade" type="radio" default="1" label="MOD_RSFIREWALL_SHOW_GRADE" description="MOD_RSFIREWALL_SHOW_GRADE_DESC" class="btn-group btn-group-yesno">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field name="show_version_check" type="radio" default="1" label="MOD_RSFIREWALL_SHOW_VERSION_CHECK" description="MOD_RSFIREWALL_SHOW_VERSION_CHECK_DESC" class="btn-group btn-group-yesno">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field name="show_map" type="radio" default="1" label="MOD_RSFIREWALL_SHOW_MAP" description="MOD_RSFIREWALL_SHOW_MAP_DESC" class="btn-group btn-group-yesno">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+				<field name="show_logs" type="radio" default="1" label="MOD_RSFIREWALL_SHOW_LOGS" description="MOD_RSFIREWALL_SHOW_LOGS_DESC" class="btn-group btn-group-yesno">
+					<option value="0">JNO</option>
+					<option value="1">JYES</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
+
+	<media destination="mod_rsfirewall" folder="media">
+		<folder>css</folder>
+		<folder>images</folder>
+		<folder>js</folder>
+		<filename>index.html</filename>
+	</media>
+
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.mod_rsfirewall.sys.ini</language>
+		<language tag="en-GB">en-GB/en-GB.mod_rsfirewall.ini</language>
+	</languages>
+	<files>
+		<folder>tmpl</folder>
+		<filename module="mod_rsfirewall">mod_rsfirewall.php</filename>
+		<filename>mod_rsfirewall.xml</filename>
+		<filename>index.html</filename>
+	</files>
+</extension>

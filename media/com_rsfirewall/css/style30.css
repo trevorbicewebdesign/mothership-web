@@ -1,0 +1,25 @@
+table > caption#captionTable {
+    display: none;
+}
+
+/* This is only used for the 'No matching results' alert */
+.alert.alert-info > .sr-only {
+    display: none;
+}
+
+.icon-rsfirewall::before {
+    content: "\e274";
+}
+
+.com-rsfirewall-button .icon-arrow-up,
+.com-rsfirewall-button .icon-arrow-down {
+    margin-right: 0;
+}
+
+.com-rsfirewall-code {
+	overflow: auto;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}

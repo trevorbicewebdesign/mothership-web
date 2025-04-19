@@ -1,0 +1,53 @@
+/* container */
+
+#mod_rsfirewall_container > div.mod_rsfirewall_line {
+	margin: 1%;
+	padding: 1%;
+	clear: left;
+	overflow: hidden;
+}
+
+#mod_rsfirewall_container > div > strong {
+	width: 20%;
+	display: inline-block;
+}
+
+#mod_rsfirewall_container > div > span {
+	width: 78%;
+	display: inline-block;
+}
+
+.mod-rsfirewall-break-word {
+	word-wrap: break-word;
+	-ms-word-break: break-all;
+	word-break: break-all;
+	word-break: break-word;
+	-webkit-hyphens: auto;
+	-moz-hyphens: auto;
+	hyphens: auto;
+}
+
+#mod_rsfirewall_container .com-rsfirewall-icon-16-loading {
+	background: url(../images/icon-16-loading.gif) no-repeat left center;
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+}
+
+#mod_rsfirewall_container .com-rsfirewall-ok {
+	color: #779E00;
+}
+
+#mod_rsfirewall_container .com-rsfirewall-error {
+	color: #FF6633;
+	font-weight: bold;
+}
+
+#mod_rsfirewall_container .com-rsfirewall-notice {
+	color: #DBA400;
+}
+
+#com-rsfirewall-virtual-map {
+	min-height: 400px;
+	position: relative;
+}

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="4.0" type="plugin" group="system" method="upgrade">
+	<name>PLG_SYSTEM_RSFIREWALLCONSOLE</name>
+	<creationDate>June 2023</creationDate>
+	<author>RSJoomla!</author>
+	<authorEmail>support@rsjoomla.com</authorEmail>
+	<authorUrl>https://www.rsjoomla.com</authorUrl>
+	<copyright>(c) 2009 - 2024 RSJoomla!</copyright>
+	<license>https://www.gnu.org/licenses/gpl-3.0.html GNU/GPL</license>
+	<version>1.0.0</version>
+	<description>PLG_SYSTEM_RSFIREWALLCONSOLE_XML_DESCRIPTION</description>
+	<namespace path="src">Rsjoomla\Plugin\System\Rsfirewallconsole</namespace>
+	<files>
+		<folder>src</folder>
+		<filename plugin="rsfirewallconsole">rsfirewallconsole.php</filename>
+		<filename>index.html</filename>
+	</files>
+	<languages>
+		<language tag="en-GB">language/en-GB/en-GB.plg_system_rsfirewallconsole.ini</language>
+		<language tag="en-GB">language/en-GB/en-GB.plg_system_rsfirewallconsole.sys.ini</language>
+	</languages>
+</extension>

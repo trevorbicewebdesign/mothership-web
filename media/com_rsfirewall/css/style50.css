@@ -1,0 +1,52 @@
+[data-color-scheme="dark"] .dashboard-info {
+    color: #ccc;
+    background-color: #0f0f0f;
+    border-color: #272727;
+}
+
+[data-color-scheme="dark"] .dashboard-table {
+    border-color: #222222;
+}
+
+[data-color-scheme="dark"] .com-rsfirewall-content-box {
+    border-color: #333;
+    background: #111;
+}
+
+[data-color-scheme="dark"] .com-rsfirewall-content-box-header {
+    background: #111111;
+}
+
+[data-color-scheme="dark"] .lds-ripple div {
+    border-color: #ccc;
+}
+
+[data-color-scheme="dark"] table.com-rsfirewall-colored-table tr.yellow td {
+    background: #000414;
+    color: #cccccc;
+}
+
+[data-color-scheme="dark"] #com-rsfirewall-main-content tbody tr {
+    background: #000;
+}
+
+[data-color-scheme="dark"] #com-rsfirewall-main-content tbody tr.alt-row {
+    background: #2e2e2e;
+}
+
+[data-color-scheme="dark"] #com-rsfirewall-grade {
+    background: #0a0a0a;
+    border-color: #1c1c1c;
+}
+
+[data-color-scheme="dark"] #com-rsfirewall-explorer-header {
+    background-color: #00061a;
+}
+
+[data-color-scheme="dark"] .diffDeleted span {
+    color: #000;
+}
+
+[data-color-scheme="dark"] .diffInserted span {
+    color: #000;
+}
