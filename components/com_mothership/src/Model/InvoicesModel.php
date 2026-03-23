@@ -9,11 +9,9 @@ class InvoicesModel extends ListModel
 {
     public function getItems()
     {
-        $user = \Joomla\CMS\Factory::getUser();
-        $userId = $user->id;
-        $clientId = \TrevorBice\Component\Mothership\Site\Helper\MothershipHelper::getUserClientId($userId);
+        $clientIds = MothershipHelper::getUserClientIds();
 
-        if (!$clientId) {
+        if (!$clientIds) {
             $app = \Joomla\CMS\Factory::getApplication();
             $app->enqueueMessage("You do not have an associated client.", 'danger');
             return [];
@@ -25,6 +23,7 @@ class InvoicesModel extends ListModel
         $query->select([
             'i.*',
             'a.name AS account_name',
+            'c.name AS client_name',
 
             // Lifecycle status
             'CASE ' . $db->quoteName('i.status') .
@@ -56,6 +55,7 @@ class InvoicesModel extends ListModel
 
         $query->from($db->quoteName('#__mothership_invoices', 'i'))
             ->join('LEFT', '#__mothership_accounts AS a ON i.account_id = a.id')
+            ->join('LEFT', '#__mothership_clients AS c ON i.client_id = c.id')
 
             // Join payment aggregation
             ->join(
@@ -65,14 +65,13 @@ class InvoicesModel extends ListModel
                         GROUP_CONCAT(p.id ORDER BY p.payment_date) AS payment_ids
                 FROM ' . $db->quoteName('#__mothership_invoice_payment', 'ip') . '
                 JOIN ' . $db->quoteName('#__mothership_payments', 'p') . ' ON ip.payment_id = p.id
-                WHERE p.status = 2
+                WHERE ( p.status = 2 OR p.status = 1 )
                 GROUP BY ip.invoice_id) AS pay
                 ON pay.invoice_id = i.id'
             )
 
             ->where($db->quoteName('i.status') . ' != 1')
-            ->where($db->quoteName('i.client_id') . ' = :clientId')
-            ->bind(':clientId', $clientId, \Joomla\Database\ParameterType::INTEGER);
+            ->where($db->quoteName('i.client_id') . ' IN (' . implode(',', array_map('intval', $clientIds)) . ')');
 
         $db->setQuery($query);
 

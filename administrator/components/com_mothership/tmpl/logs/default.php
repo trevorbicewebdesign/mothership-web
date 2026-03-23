@@ -111,9 +111,17 @@ $listDirn = $this->escape($this->state->get('list.direction'));
                                         else if($item->action == 'viewed' && $item->object_type =='domain'){
                                             echo sprintf(Text::_('COM_MOTHERSHIP_LOG_DOMAIN_VIEWED'), $item->object_id);                                        
                                         }
+                                        else if($item->action == 'scanned' && $item->object_type =='domain'){
+                                            echo sprintf(Text::_('COM_MOTHERSHIP_LOG_DOMAIN_SCANNED'), $item->object_id);                                        
+                                        }
+                                        else if($item->action == 'scanned' && $item->object_type =='project'){
+                                            echo sprintf(Text::_('COM_MOTHERSHIP_LOG_PROJECT_SCANNED'), $item->object_id);                                        
+                                        }      
+                                        else if($item->action == 'payment_status_changed' && $item->object_type == 'payment'){
+                                            echo sprintf(Text::_('COM_MOTHERSHIP_LOG_PAYMENT_STATUS_CHANGED'), $meta->old_status, $meta->new_status);
+                                        }                                 
                                         
-                                        
-                
+
                                         ?>
                                     </td>
                                     <td>
@@ -138,7 +146,18 @@ $listDirn = $this->escape($this->state->get('list.direction'));
                                             echo sprintf(Text::_('COM_MOTHERSHIP_LOG_PROJECT_VIEWED_DESC'), $item->object_id, $item->user_id);                                                                             
                                         }
                                         else if($item->action == 'viewed' && $item->object_type =='domain'){
-                                            echo sprintf(Text::_('COM_MOTHERSHIP_LOG_DOMAIN_VIEWED_DESC'), $item->object_id, $item->user_id);                                                                                                                     }
+                                            echo sprintf(Text::_('COM_MOTHERSHIP_LOG_DOMAIN_VIEWED_DESC'), $item->object_id, $item->user_id);   
+                                        }
+                                        else if($item->action == 'scanned' && $item->object_type =='domain'){
+                                            echo sprintf(Text::_('COM_MOTHERSHIP_LOG_DOMAIN_SCANNED_DESC'), $item->object_id, $item->user_id);                                        
+                                        }
+                                        else if($item->action == 'scanned' && $item->object_type =='project'){
+                                            echo sprintf(Text::_('COM_MOTHERSHIP_LOG_PROJECT_SCANNED_DESC'), $item->object_id, $item->user_id);                                        
+                                        }
+                                        else if($item->action == 'payment_status_changed' && $item->object_type == 'payment'){
+                                            echo sprintf(Text::_('COM_MOTHERSHIP_LOG_PAYMENT_STATUS_CHANGED_DESC'), $item->object_id,$meta->old_status, $meta->new_status, $item->user_id);
+                                        }
+                                       
                                         ?>
                                     </td>
                                     <td>

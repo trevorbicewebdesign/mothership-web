@@ -61,9 +61,6 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                 <th scope="col" class="w-10">
                                     <?php echo HTMLHelper::_('searchtools.sort', 'COM_MOTHERSHIP_PAYMENT_HEADING_STATUS', 'p.status', $listDirn, $listOrder); ?>
                                 </th>
-                                <th scope="col" class="w-5">
-                                    <?php echo Text::_('COM_MOTHERSHIP_PAYMENT_HEADING_ALLOCATIONS'); ?>
-                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -93,12 +90,12 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                     <td>
                                         <?php echo $this->escape($item->payment_method); ?>
                                     </td>
-                                    <td>
+                                    <td class="client-column">
                                         <a href="<?php echo Route::_("index.php?option=com_mothership&task=client.edit&id={$item->client_id}&return=" . base64_encode(Route::_('index.php?option=com_mothership&view=payments'))); ?>">
                                             <?php echo htmlspecialchars($item->client_name, ENT_QUOTES, 'UTF-8'); ?>
                                         </a>
                                     </td>
-                                    <td>
+                                    <td  class="account-column">
                                         <a href="<?php echo Route::_("index.php?option=com_mothership&task=account.edit&id={$item->account_id}&return=" . base64_encode(Route::_('index.php?option=com_mothership&view=payments'))); ?>">
                                             <?php echo htmlspecialchars($item->account_name, ENT_QUOTES, 'UTF-8'); ?>
                                         </a>
@@ -107,8 +104,18 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                         <?php echo HTMLHelper::_('date', $item->created_at, Text::_('DATE_FORMAT_LC4')); ?>
                                     </td>
                                     <td>
-                                        <?php echo $item->status; ?><br/>
-                                        <?php $invoice_ids = array_filter(explode(",", $item->invoice_ids)); ?>
+                                        <?php 
+                                        echo $item->status."<br/>";
+                                        switch ($item->status) {
+                                            case 'Pending': ?>                                                
+                                               <a class="btn btn-primary btn-sm" href="index.php?option=com_mothership&task=payment.confirm&id=<?php echo $item->id;?><?php echo "&return=".base64_encode(Route::_('index.php?option=com_mothership&view=payments')); ?>">Confirm</a>
+                                               <?php
+                                                break;
+                                            default:
+                                                break;
+                                        }                                  
+                                        ?><br/>
+                                        <?php $invoice_ids = array_filter(explode(",", $item->invoice_ids ?? '')); ?>
                                         <?php if (count($invoice_ids) > 0): ?>
                                         <ul style="margin-bottom:0px;">
                                             <?php foreach ($invoice_ids as $invoiceId): ?>
@@ -116,11 +123,6 @@ $listDirn  = $this->escape($this->state->get('list.direction'));
                                             <?php endforeach; ?>
                                         </ul>
                                         <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <a href="<?php echo Route::_("index.php?option=com_mothership&view=invoicepayments&payment_id={$item->id}"); ?>" title="<?php echo Text::_('COM_MOTHERSHIP_PAYMENT_MANAGE_ALLOCATIONS'); ?>">
-                                            <?php echo Text::_('COM_MOTHERSHIP_PAYMENT_MANAGE_ALLOCATIONS'); ?>
-                                        </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>

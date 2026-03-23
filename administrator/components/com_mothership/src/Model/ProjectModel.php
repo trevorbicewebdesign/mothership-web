@@ -112,17 +112,25 @@ class ProjectModel extends AdminModel
      */
     protected function loadFormData()
     {
-        // Check the session for previously entered form data.
         $data = Factory::getApplication()->getUserState('com_mothership.edit.project.data', []);
 
         if (empty($data)) {
             $data = $this->getItem();
         }
 
+        // Decode the metadata JSON into an array so the form can populate it
+        if (isset($data->metadata) && is_string($data->metadata)) {
+            $decoded = json_decode($data->metadata, true);
+            if (json_last_error() === JSON_ERROR_NONE) {
+                $data->metadata = $decoded;
+            }
+        }
+
         $this->preprocessData('com_mothership.project', $data);
 
         return $data;
     }
+
 
     /**
      * Prepare and sanitise the table prior to saving.
@@ -138,12 +146,30 @@ class ProjectModel extends AdminModel
         $table->name = htmlspecialchars_decode($table->name, ENT_QUOTES);
     }
 
+    protected function preprocessForm(\Joomla\CMS\Form\Form $form, $data, $group = 'content')
+    {
+        parent::preprocessForm($form, $data, $group);
+
+        // Merge in additional metadata fields
+        \Joomla\CMS\Form\Form::addFormPath(JPATH_ROOT . '/administrator/component/com_mothership/src/models/forms');
+        $form->loadFile('project-website', false);
+    }
+
+
     public function save($data)
     {
         $table = $this->getTable();
 
-        Log::add('Data received for saving: ' . json_encode($data), Log::DEBUG, 'com_mothership');
-    
+        // Convert metadata array to JSON
+        if( is_object($data) && (isset($data->metadata) && is_array($data->metadata))) {
+            $data->metadata = json_encode($data->metadata);
+        }
+
+        if(is_array($data) && isset($data['metadata'])) {
+            $data['metadata'] = json_encode($data['metadata']);
+        }
+        
+
         if (!$table->bind($data)) {
             $error = $table->getError();
             Log::add('Bind failed: ' . $error, Log::ERROR, 'com_mothership');
@@ -151,27 +177,51 @@ class ProjectModel extends AdminModel
             return false;
         }
 
-        // Set created date if empty
         if (empty($table->created)) {
             $table->created = Factory::getDate()->toSql();
         }
-    
+
         if (!$table->check()) {
             $error = $table->getError();
             Log::add('Check failed: ' . $error, Log::ERROR, 'com_mothership');
             $this->setError($error);
             return false;
         }
-    
+
         if (!$table->store()) {
             $error = $table->getError();
             Log::add('Store failed: ' . $error, Log::ERROR, 'com_mothership');
             $this->setError($error);
             return false;
         }
-    
+
+        // Set the new record ID into the model state
+        $this->setState($this->getName() . '.id', $table->id);
+
         return true;
     }
-    
+
+     /**
+     * Cancel editing by checking in the record.
+     *
+     * @param   int|null  $pk  The primary key of the record to check in. If null, it attempts to load it from the state.
+     *
+     * @return  bool  True on success, false on failure.
+     */
+    public function cancelEdit($pk = null)
+    {
+        // Use the provided primary key or retrieve it from the model state
+        $pk = $pk ? $pk : (int) $this->getState($this->getName() . '.id');
+
+        if ($pk) {
+            $table = $this->getTable();
+            if (!$table->checkin($pk)) {
+                $this->setError($table->getError());
+                return false;
+            }
+        }
+
+        return true;
+    }
 
 }
