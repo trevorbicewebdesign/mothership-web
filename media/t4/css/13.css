@@ -324,6 +324,12 @@
 	opacity: 0.5;
 }
 
+/* Section: Donation Spotlight */
+
+#t4-donation-spotlight .bg-overlay {
+	opacity: 0.5;
+}
+
 /* Section: Content Mass Bottom */
 
 #t4-content-mass-bottom .bg-overlay {

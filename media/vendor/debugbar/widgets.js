@@ -506,13 +506,15 @@ if (typeof(PhpDebugBar) == 'undefined') {
 
                     for (var i = 0; i < data.measures.length; i++) {
                         var measure = data.measures[i];
+                        var group = measure.group || measure.label;
 
-                        if(!aggregate[measure.label])
-                            aggregate[measure.label] = { count: 0, duration: 0, memory : 0 };
+                        if(!aggregate[group]) {
+                            aggregate[group] = { count: 0, duration: 0, memory : 0 };
+                        }
 
-                        aggregate[measure.label]['count'] += 1;
-                        aggregate[measure.label]['duration'] += measure.duration;
-                        aggregate[measure.label]['memory'] += (measure.memory || 0);
+                        aggregate[group]['count'] += 1;
+                        aggregate[group]['duration'] += measure.duration;
+                        aggregate[group]['memory'] += (measure.memory || 0);
 
                         var m = $('<div />').addClass(csscls('measure')),
                             li = $('<li />'),
@@ -524,7 +526,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
                             width: width + "%"
                         }));
                         m.append($('<span />').addClass(csscls('label'))
-                            .text(measure.label + " (" + measure.duration_str +(measure.memory ? '/' + measure.memory_str: '') + ")"));
+                            .text(measure.label.replace(/\s+/g, ' ') + ( measure.duration ? " (" + measure.duration_str +(measure.memory ? '/' + measure.memory_str: '') + ")" : "")));
 
                         if (measure.collector) {
                             $('<span />').addClass(csscls('collector')).text(measure.collector).appendTo(m);
@@ -571,7 +573,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
                         width = Math.min((aggregate.data.duration * 100 / data.duration).toFixed(2), 100);
 
                         aggregateTable.append('<tr><td class="' + csscls('name') + '">' +
-                            aggregate.data.count + ' x ' + $('<i />').text(aggregate.label).html() + ' (' + width + '%)</td><td class="' + csscls('value') + '">' +
+                            aggregate.data.count + ' x ' + $('<i />').text(aggregate.label.replace(/\s+/g, ' ')).html() + ' (' + width + '%)</td><td class="' + csscls('value') + '">' +
                             '<div class="' + csscls('measure') +'">' +
                                 '<span class="' + csscls('value') + '"></span>' +
                                 '<span class="' + csscls('label') + '">' + formatDuration(aggregate.data.duration) + (aggregate.data.memory ? '/' + formatBytes(aggregate.data.memory) : '') + '</span>' +
@@ -679,11 +681,15 @@ if (typeof(PhpDebugBar) == 'undefined') {
             this.$actions = $('<div />').addClass(csscls('dataset-actions')).appendTo(this.$el);
 
             var self = this;
+            var debugbar = self.get('debugbar');
 
             this.$autoshow = $('<input type=checkbox>')
                 .on('click', function() {
-                    if (self.get('debugbar').ajaxHandler) {
-                        self.get('debugbar').ajaxHandler.setAutoShow($(this).is(':checked'));
+                    if (debugbar.ajaxHandler) {
+                        debugbar.ajaxHandler.setAutoShow($(this).is(':checked'));
+                    }
+                    if (debugbar.controls['__settings']) {
+                        debugbar.controls['__settings'].get('widget').set('autoshow', this.autoShow);
                     }
                 });
 
@@ -831,6 +837,8 @@ if (typeof(PhpDebugBar) == 'undefined') {
                             $a.append(debugbar.getControl(key[0]).$badge.clone().css('display', 'inline-block').text(d));
                         }
                         $a.appendTo($badges).click(clickHandler);
+                    } else if (key[1] === 'tooltip') {
+                        debugbar.getControl(key[0]).set('tooltip', d);
                     }
                 }
             });
@@ -848,6 +856,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
         }
 
     });
+
 
 
 })(PhpDebugBar.$);
