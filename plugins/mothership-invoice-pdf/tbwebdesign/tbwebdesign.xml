@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="mothership-invoice-pdf" method="upgrade" version="5.0" element="tbwebdesign">
+    <name>Mothership - Invoice PDF Template - TB Webdesign</name>
+    <author>Trevor Bice</author>
+    <creationDate>2025-11-19</creationDate>
+    <version>0.0.3</version>
+    <description>Custom invoice PDF template for Trevor Bice Webdesign.</description>
+    <files>
+        <filename plugin="tbwebdesign">tbwebdesign.php</filename>
+        <folder>layout</folder>
+        <folder>assets</folder>
+    </files>
+    <languages>
+        <language tag="en-GB" path="language">language/en-GB/en-GB.plg_mothership-invoice-pdf_tbwebdesign.ini</language>
+        <language tag="en-GB" path="language">language/en-GB/en-GB.plg_mothership-invoice-pdf_tbwebdesign.sys.ini</language>
+    </languages>
+</extension>

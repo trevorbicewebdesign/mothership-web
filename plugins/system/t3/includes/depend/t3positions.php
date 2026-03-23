@@ -110,9 +110,13 @@ class JFormFieldT3Positions extends JFormField
 		$disabled = $this->toBoolean((string) $this->element['disabled']);
 		
 		
-		return JHtml::_('select.groupedlist', $templateGroups, $this->name, array(
-			'list.attr' => ($multiple ? ' multiple="multiple" size="10"' : '') . ($disabled ? 'disabled="disabled"' : '')
-		));
+		return JHtml::_('select.groupedlist', $templateGroups, $this->name,
+            array(
+                'list.attr' => ($multiple ? ' multiple="multiple" size="10"' : '')
+                    . ($disabled ? 'disabled="disabled"' : '') . "class='form-select form-select-color-state'",
+                'list.select' => $this->value,
+            )
+        );
 	}
 
 
