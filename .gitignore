@@ -16,3 +16,4 @@
 !/tmp/index.html
 /logs/*
 !/logs/index.html
+/administrator/cache
