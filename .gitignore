@@ -1,24 +1,44 @@
-@eaDir
-*.sql
-*.zip
+# =============================================================================
+# .gitignore - mothership-web
+# This repo tracks the FULL Joomla install (core included), so do NOT add
+# core-ignore rules here. Ignore only: secrets, runtime/generated dirs,
+# user uploads, third-party deps, and OS/editor junk.
+# =============================================================================
 
-# Environment-specific + secret; loaded from above the web root via defines.php
+# --- Secrets (loaded from above the web root via defines.php) ----------------
 /configuration.php
 /configuration.bak.php
 
+# --- Third-party dependencies (installed per-environment) --------------------
 /vendor/
+
+# --- Runtime / generated (keep the index.html placeholders) ------------------
 /cache/*
 !/cache/index.html
-
-/administrator/logs/*
-!/administrator/logs/index.html
-/installation
+/administrator/cache/*
 !/administrator/cache/index.html
-/images/*
-!/images/index.html
 /tmp/*
 !/tmp/index.html
 /logs/*
 !/logs/index.html
-/administrator/cache
+/administrator/logs/*
+!/administrator/logs/index.html
+
+# --- User uploads ------------------------------------------------------------
+/images/*
+!/images/index.html
+
+# --- Joomla installer (present only during setup) ----------------------------
+/installation
+
+# --- Archives / DB dumps -----------------------------------------------------
+*.zip
+*.sql
+
+# --- OS / editor junk --------------------------------------------------------
 .DS_Store
+Thumbs.db
+Desktop.ini
+@eaDir
+/.idea/
+/.vscode/
