@@ -4,6 +4,7 @@
 
 # Environment-specific + secret; loaded from above the web root via defines.php
 /configuration.php
+/configuration.bak.php
 
 /vendor/
 /cache/*
