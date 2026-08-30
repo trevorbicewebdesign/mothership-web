@@ -17,3 +17,4 @@
 /logs/*
 !/logs/index.html
 /administrator/cache
+.DS_Store
