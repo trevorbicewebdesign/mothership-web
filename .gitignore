@@ -2,6 +2,9 @@
 *.sql
 *.zip
 
+# Environment-specific + secret; loaded from above the web root via defines.php
+/configuration.php
+
 /vendor/
 /cache/*
 !/cache/index.html
