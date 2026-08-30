@@ -19,6 +19,7 @@ if (!$list) {
 ?>
 <div class="mod-articlesnews newsflash">
     <?php foreach ($list as $item) : ?>
+        1234qwer
         <div class="mod-articlesnews__item" itemscope itemtype="https://schema.org/Article">
             <?php require ModuleHelper::getLayoutPath('mod_articles_news', '_item'); ?>
         </div>
