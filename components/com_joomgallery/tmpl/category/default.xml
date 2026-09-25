@@ -82,11 +82,11 @@
                 useglobal="true"
                 parentclass="span-3"
                 min="0"
-                max="999"
                 step="1"
+                validate="number"
+                filter="integer"
                 label="COM_JOOMGALLERY_CONFIG_NUMB_SUBCATEGORIES"
                 description="COM_JOOMGALLERY_CONFIG_NUMB_SUBCATEGORIES_DESC"
-                filter="int"
             />
             <field
                 name="jg_category_view_subcategories_pagination"
@@ -101,6 +101,18 @@
                 <option value="0">COM_JOOMGALLERY_CONFIG_CATEGORY_VIEW_PAGINATION</option>
                 <option value="1">COM_JOOMGALLERY_CONFIG_CATEGORY_VIEW_LOADMORE</option>
                 <option value="2">COM_JOOMGALLERY_CONFIG_CATEGORY_VIEW_INFINITY</option>
+            </field>
+            <field
+                name="jg_category_view_subcategories_category_description"
+                type="jgradio"
+                useglobal="true"
+                parentclass="span-3"
+                class="btn-group btn-group-yesno"
+                label="COM_JOOMGALLERY_CONFIG_CATEGORY_SUBCATEGORIES_DESCRIPTION"
+                validate="options"
+                >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
             </field>
             <field
                 name="jg_category_view_subcategories_random_image"
@@ -171,12 +183,12 @@
                 type="jgnumber"
                 useglobal="true"
                 min="1"
-                max="9999"
                 step="1"
+                validate="number"
+                filter="integer"
                 parentclass="span-3"
                 label="COM_JOOMGALLERY_MENU_JUSTIFIED_HEIGHT"
                 description="COM_JOOMGALLERY_MENU_JUSTIFIED_HEIGHT_NOTE_DESC"
-                filter="int"
                 showon="jg_category_view_class!:columns[AND]jg_category_view_class!:masonry"
             />
             <field
@@ -184,12 +196,12 @@
                 type="jgnumber"
                 useglobal="true"
                 min="0"
-                max="999"
                 step="1"
+                validate="number"
+                filter="integer"
                 parentclass="span-3"
                 label="COM_JOOMGALLERY_MENU_JUSTIFIED_GAP"
                 description="COM_JOOMGALLERY_MENU_JUSTIFIED_GAP_NOTE_DESC"
-                filter="int"
                 showon="jg_category_view_class!:columns[AND]jg_category_view_class!:masonry"
             />
             <field
@@ -211,11 +223,12 @@
                 useglobal="true"
                 parentclass="span-3"
                 min="1"
-                max="9999"
                 step="1"
+                validate="number"
+                filter="integer"
                 label="COM_JOOMGALLERY_CONFIG_NUMB_IMAGES"
                 description="COM_JOOMGALLERY_CONFIG_NUMB_IMAGES_DESC"
-                filter="int"
+                showon="jg_category_view_pagination!:1"
             />
             <field
                 name="jg_category_view_pagination"
@@ -230,17 +243,39 @@
                 <option value="1">COM_JOOMGALLERY_MENU_CATEGORY_VIEW_PAGINATION_OPT1</option>
                 <option value="2">COM_JOOMGALLERY_MENU_CATEGORY_VIEW_PAGINATION_OPT2</option>
             </field>
+            <field name="jg_category_view_ord_images"
+                type="jglist"
+                useglobal="true"
+                parentclass="span-3"
+                label="COM_JOOMGALLERY_CONFIG_SORT_IMAGES"
+                description="COM_JOOMGALLERY_CONFIG_SORT_IMAGES_DESC"
+                validate="options"
+                >
+                <option value="a.ordering ASC">JGRID_HEADING_ORDERING_ASC</option>
+                <option value="a.ordering DESC">JGRID_HEADING_ORDERING_DESC</option>
+                <option value="a.date ASC">JDATE_ASC</option>
+                <option value="a.date DESC">JDATE_DESC</option>
+                <option value="a.author ASC">JAUTHOR_ASC</option>
+                <option value="a.author DESC">JAUTHOR_DESC</option>
+                <option value="a.title ASC">JGLOBAL_TITLE_ASC</option>
+                <option value="a.title DESC">JGLOBAL_TITLE_DESC</option>
+                <option value="a.hits ASC">JGLOBAL_HITS_ASC</option>
+                <option value="a.hits DESC">JGLOBAL_HITS_DESC</option>
+                <option value="a.downloads ASC">COM_JOOMGALLERY_DOWNLOADS_ASC</option>
+                <option value="a.downloads DESC">COM_JOOMGALLERY_DOWNLOADS_DESC</option>
+                <option value="RAND()">COM_JOOMGALLERY_RANDOM_ORDER</option>
+            </field>   
             <field
                 name="jg_category_view_number_of_reloaded_images"
                 type="jgnumber"
                 useglobal="true"
                 parentclass="span-3"
                 min="1"
-                max="9999"
                 step="1"
+                validate="number"
+                filter="integer"
                 label="COM_JOOMGALLERY_MENU_CATEGORY_VIEW_NUMBER_OF_RELOADED_IMAGES_LABEL"
                 description="COM_JOOMGALLERY_MENU_CATEGORY_VIEW_NUMBER_OF_RELOADED_IMAGES_DESC"
-                filter="int"
                 showon="jg_category_view_pagination:2"
             />
             <field
@@ -310,6 +345,19 @@
                 class="btn-group btn-group-yesno"
                 label="JGLOBAL_DESCRIPTION"
                 validate="options"
+                >
+                <option value="0">JNO</option>
+                <option value="1">JYES</option>
+            </field>
+            <field
+                name="jg_category_view_show_description_label"
+                type="jgradio"
+                useglobal="true"
+                class="btn-group btn-group-yesno"
+                label="COM_JOOMGALLERY_CONFIG_CATEGORY_VIEW_DESCRIPTION_LABEL"
+                description="COM_JOOMGALLERY_CONFIG_CATEGORY_VIEW_DESCRIPTION_LABEL_DESC"
+                validate="options"
+                showon="jg_category_view_show_description!:0"
                 >
                 <option value="0">JNO</option>
                 <option value="1">JYES</option>

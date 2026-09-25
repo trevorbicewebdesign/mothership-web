@@ -1,25 +1,27 @@
 <?php
 /**
-******************************************************************************************
-**   @package    com_joomgallery                                                        **
-**   @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>                 **
-**   @copyright  2008 - 2025  JoomGallery::ProjectTeam                                  **
-**   @license    GNU General Public License version 3 or later                          **
-*****************************************************************************************/
+ * *********************************************************************************
+ *    @package    com_joomgallery                                                 **
+ *    @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>          **
+ *    @copyright  2008 - 2026  JoomGallery::ProjectTeam                           **
+ *    @license    GNU General Public License version 3 or later                   **
+ * *********************************************************************************
+ */
 
 namespace Joomgallery\Component\Joomgallery\Administrator\Controller;
 
-// No direct access
-\defined('_JEXEC') or die;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') || die;
+// phpcs:enable PSR1.Files.SideEffects
 
-use \Joomla\CMS\Factory;
-use \Joomla\Input\Input;
-use \Joomla\CMS\Router\Route;
-use \Joomla\CMS\Language\Text;
-use \Joomla\Utilities\ArrayHelper;
-use \Joomla\CMS\Application\CMSApplication;
-use \Joomla\CMS\MVC\Factory\MVCFactoryInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Controller\JoomAdminController;
+use Joomgallery\Component\Joomgallery\Administrator\Controller\JoomAdminController;
+use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\Factory\MVCFactoryInterface;
+use Joomla\CMS\Router\Route;
+use Joomla\Input\Input;
+use Joomla\Utilities\ArrayHelper;
 
 /**
  * Images list controller class.
@@ -30,23 +32,23 @@ use \Joomgallery\Component\Joomgallery\Administrator\Controller\JoomAdminControl
 class ImagesController extends JoomAdminController
 {
   /**
-	 * Constructor.
-	 *
-	 * @param   array                $config   An optional associative array of configuration settings.
-	 *                                         Recognized key values include 'name', 'default_task', 'model_path', and
-	 *                                         'view_path' (this list is not meant to be comprehensive).
-	 * @param   MVCFactoryInterface  $factory  The factory.
-	 * @param   CMSApplication       $app      The Application for the dispatcher
-	 * @param   Input                $input    The Input object for the request
-	 *
-	 * @since   4.0.0
-	 */
-	public function __construct($config = array(), MVCFactoryInterface $factory = null, ?CMSApplication $app = null, ?Input $input = null)
-	{
+   * Constructor.
+   *
+   * @param   array                $config   An optional associative array of configuration settings.
+   *                                         Recognized key values include 'name', 'default_task', 'model_path', and
+   *                                         'view_path' (this list is not meant to be comprehensive).
+   * @param   MVCFactoryInterface  $factory  The factory.
+   * @param   CMSApplication       $app      The Application for the dispatcher
+   * @param   Input                $input    The Input object for the request
+   *
+   * @since   4.0.0
+   */
+  public function __construct($config = [], ?MVCFactoryInterface $factory = null, ?CMSApplication $app = null, ?Input $input = null)
+  {
     parent::__construct($config, $factory, $app, $input);
 
     // Define standard task mappings.
-		$this->registerTask('featured', 'feature');
+    $this->registerTask('featured', 'feature');
     $this->registerTask('unfeatured', 'feature');
 
     $this->registerTask('approved', 'approve');
@@ -54,66 +56,66 @@ class ImagesController extends JoomAdminController
   }
 
   /**
-	 * Method to publish a list of items
-	 *
-	 * @return  void
-	 *
-	 * @since   4.0
-	 */
-	public function publish()
-	{
+   * Method to publish a list of items
+   *
+   * @return  void
+   *
+   * @since   4.0
+   */
+  public function publish()
+  {
     $this->changeState('publish');
   }
 
   /**
-	 * Method to feature a list of items
-	 *
-	 * @return  void
-	 *
-	 * @since   4.0
-	 */
-	public function feature()
-	{
+   * Method to feature a list of items
+   *
+   * @return  void
+   *
+   * @since   4.0
+   */
+  public function feature()
+  {
     $this->changeState('feature');
   }
 
   /**
-	 * Method to approve a list of items
-	 *
-	 * @return  void
-	 *
-	 * @since   4.0
-	 */
-	public function approve()
-	{
+   * Method to approve a list of items
+   *
+   * @return  void
+   *
+   * @since   4.0
+   */
+  public function approve()
+  {
     $this->changeState('approve');
   }
 
-	/**
-	 * Method to clone existing Images
-	 *
-	 * @return  void
-	 *
-	 * @throws  Exception
-	 */
-	public function duplicate()
-	{
-		// Check for request forgeries
-		$this->checkToken();
+  /**
+   * Method to clone existing Images
+   *
+   * @return  void
+   *
+   * @throws  \Exception
+   */
+  public function duplicate()
+  {
+    // Check for request forgeries
+    $this->checkToken();
 
-		// Get id(s)
-		$pks = $this->input->post->get('cid', array(), 'array');
+    // Get id(s)
+    $pks = $this->input->post->get('cid', [], 'array');
 
-		try
-		{
-			if(empty($pks))
-			{
-				throw new \Exception(Text::_('JERROR_NO_ITEMS_SELECTED'));
-			}
+    try
+    {
+      if(empty($pks))
+      {
+        throw new \Exception(Text::_('JERROR_NO_ITEMS_SELECTED'));
+      }
 
-			ArrayHelper::toInteger($pks);
-			$model = $this->getModel();
-			$model->duplicate($pks);
+      ArrayHelper::toInteger($pks);
+      $model = $this->getModel();
+      $model->duplicate($pks);
 
       if(\count($pks) > 1)
       {
@@ -125,270 +127,266 @@ class ImagesController extends JoomAdminController
         $this->setMessage(Text::_('COM_JOOMGALLERY_ITEM_SUCCESS_DUPLICATED'));
         $this->component->addLog(Text::_('COM_JOOMGALLERY_ITEM_SUCCESS_DUPLICATED'), 'info', 'jerror');
       }
-		}
-		catch (Exception $e)
-		{
-			$this->component->addLog($e->getMessage(), 'warning', 'jerror');
+    }
+    catch(\Exception $e)
+    {
+      $this->component->addLog($e->getMessage(), 'warning', 'jerror');
 
-			Factory::getApplication()->enqueueMessage($e->getMessage(), 'warning');
-		}
+      Factory::getApplication()->enqueueMessage($e->getMessage(), 'warning');
+    }
 
-		$this->setRedirect('index.php?option='._JOOM_OPTION.'&view=images');
-	}
+    $this->setRedirect('index.php?option=' . _JOOM_OPTION . '&view=images');
+  }
 
   /**
-	 * Method to recreate imagetypes of existing Images
-	 *
-	 * @return  void
-	 *
-	 * @throws  Exception
-	 */
-	public function recreate()
-	{
-    // Get inputs
-    $pks     = $this->app->getUserStateFromRequest('joom.recreate.cid', 'cid', array(), 'array');
-    $type    = $this->app->getUserStateFromRequest('joom.recreate.type', 'type', 'original', 'cmd');
-    $count   = $this->app->getUserState('joom.recreate.count', 0);
-    $created = $this->app->getUserState('joom.recreate.created', array());
-    $error   = $this->app->getUserState('joom.recreate.error', array());
+   * Method to recreate imagetypes of existing Images
+   *
+   * @return  void
+   *
+   * @throws  \Exception
+   */
+  public function recreate()
+  {
+    $this->checkToken();
 
-    if($count === 0)
-    {
-      // Check for request forgeries
-      $this->checkToken();
-    }    
+    $pks  = $this->input->post->get('cid', [], 'array');
+    $type = $this->input->post->get('type', 'thumbnail', 'cmd');
 
     try
     {
-      if($count > 0 && empty($pks))
+      if(empty($pks))
       {
-        $this->component->addLog(Text::_('JERROR_NO_ITEMS_SELECTED'), 'warning', 'jerror');
         throw new \Exception(Text::_('JERROR_NO_ITEMS_SELECTED'));
       }
 
-      // Sanitize input array
-      $pks = ArrayHelper::toInteger($pks);
+      // Load task definition
+      $com_scheduler = Factory::getApplication()->bootComponent('com_scheduler');
+      $listModel     = $com_scheduler->getMVCFactory()->createModel('Tasks', 'administrator');
+      $listModel->getState();
+      $listModel->setState('filter.state', 1);
+      $listModel->setState('filter.type', 'joomgalleryTask.recreateImage');
+      $scheduler_items = $listModel->getItems();
 
-      // Create refresher
-      $options = array( 'controller' => 'images',
-                        'task'       => 'recreate',
-                        'name'       => Text::_('COM_JOOMGALLERY_RECREATE_IMAGES'),
-                        'remaining'  => count($pks),
-                        'start'      => $this->input->getBool('cid')
-                      );
-      $this->component->createRefresher($options);
-      $refresher = $this->component->getRefresher();
-
-      // Iterate the items to recreate each one.
-		  foreach($pks as $key => $pk)
+      if(empty($scheduler_items))
       {
-        $model = $this->getModel('image');
-        if($model->recreate($pk, $type))
-        {
-          // Success
-          \array_push($created, $pk);
-        }
-        else
-        {
-          // Error
-          \array_push($error, $pk);
-        }
-        
-        // Remove item from todo-list
-        unset($pks[$key]);
+        // No scheduler task found
+        throw new \Exception(Text::sprintf('COM_JOOMGALLERY_TASK_ERROR_NO_SCHEDULER', 'recreate'));
+      }
 
-        // Count up
-        $count++;
+      // Try to guess the scheduler task
+      $scheduler_id = $scheduler_items[0]->id;
 
-        // Check remaining time
-        if(!$refresher->check())
+      foreach($scheduler_items as $scheduler_task)
+      {
+        if(str_contains(strtolower($scheduler_task->title), $type))
         {
-          $this->app->setUserState('joom.recreate.cid', $pks);
-          $this->app->setUserState('joom.recreate.count', $count);
-          $this->app->setUserState('joom.recreate.created', $created);
-          $this->app->setUserState('joom.recreate.error', $error);
-          $refresher->refresh(count($pks));
+          // Scheduler task found with correct type in title
+          $scheduler_id = $scheduler_task->id;
+
+          break;
         }
+      }
+
+      ArrayHelper::toInteger($pks);
+      $taskModel = $this->factory->createModel('Task', 'Administrator');
+      $shortRef  = bin2hex(random_bytes(3));
+
+      $taskData = [
+        'title'    => Text::sprintf('COM_JOOMGALLERY_TASK_TITLE_GENERATED', $shortRef),
+        'type'     => 'joomgalleryTask.recreateImage',
+        'taskid'   => $scheduler_id,
+        'state'    => 1,
+        'access'   => 1,
+        'priority' => 2,
+        'note'     => '',
+        'queue'    => implode(',', $pks),
+        'params'   => json_encode(
+            [
+              'type'  => $type,
+              'parallel_limit' => 1,
+            ]
+        ),
+      ];
+
+      if($taskModel->save($taskData))
+      {
+        $newTaskId = $taskModel->getState('task.id');
+
+        if(empty($newTaskId))
+        {
+          $newTaskId = $taskModel->getTable()->id;
+        }
+
+        $this->setMessage(Text::_('COM_JOOMGALLERY_TASK_CREATED_SUCCESSFULLY'));
+        $this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=images&newTaskId=' . $newTaskId, false));
+      }
+      else
+      {
+        $this->setMessage($taskModel->getError(), 'error');
+        $this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=images', false));
       }
     }
     catch(\Exception $e)
     {
-      Factory::getApplication()->enqueueMessage($e->getMessage(), 'warning');
+      $this->component->addLog($e->getMessage(), 'warning', 'jerror');
+      $this->setMessage($e->getMessage(), 'warning');
+      $this->setRedirect(Route::_('index.php?option=' . $this->option . '&view=images', false));
     }
-
-    // Output success message
-    if(\count($created) > 0)
-    {
-      $this->app->enqueueMessage(Text::sprintf('COM_JOOMGALLERY_IMAGES_RECREATED_SUCCESS', \implode(', ', $created)));
-    }
-
-    // Output error message
-    if(\count($error) > 0)
-    {
-      $this->app->enqueueMessage(Text::sprintf('COM_JOOMGALLERY_IMAGES_RECREATED_ERROR', \implode(', ', $error)), 'error');
-      $this->component->addLog(Text::sprintf('COM_JOOMGALLERY_IMAGES_RECREATED_ERROR', \implode(', ', $error)), 'error', 'jerror');
-    }
-
-    $this->app->setUserState('joom.recreate.cid', array());
-    $this->app->setUserState('joom.recreate.count', 0);
-    $this->app->setUserState('joom.recreate.created', array());
-    $this->app->setUserState('joom.recreate.error', array());
-
-    $this->setRedirect('index.php?option='._JOOM_OPTION.'&view=images');
   }
 
-	/**
-	 * Proxy for getModel.
-	 *
-	 * @param   string  $name    Optional. Model name
-	 * @param   string  $prefix  Optional. Class prefix
-	 * @param   array   $config  Optional. Configuration array for model
-	 *
-	 * @return  object	The Model
-	 *
-	 * @since   4.0.0
-	 */
-	public function getModel($name = 'Image', $prefix = 'Administrator', $config = array())
-	{
-		return parent::getModel($name, $prefix, array('ignore_request' => true));
-	}	
-
-	/**
-	 * Method to save the submitted ordering values for records via AJAX.
-	 *
-	 * @return  void
-	 *
-	 * @since   4.0.0
-	 *
-	 * @throws  \Exception
-	 */
-	public function saveOrderAjax()
-	{
-		// Get the input
-		$input = Factory::getApplication()->input;
-		$pks   = $input->post->get('cid', array(), 'array');
-		$order = $input->post->get('order', array(), 'array');
-
-		// Sanitize the input
-		ArrayHelper::toInteger($pks);
-		ArrayHelper::toInteger($order);
-
-		// Get the model
-		$model = $this->getModel();
-
-		// Save the ordering
-		$return = $model->saveorder($pks, $order);
-
-		if($return)
-		{
-			echo "1";
-		}
-
-		// Close the application
-		Factory::getApplication()->close();
-	}
+  /**
+   * Proxy for getModel.
+   *
+   * @param   string  $name    Optional. Model name
+   * @param   string  $prefix  Optional. Class prefix
+   * @param   array   $config  Optional. Configuration array for model
+   *
+   * @return  object  The Model
+   *
+   * @since   4.0.0
+   */
+  public function getModel($name = 'Image', $prefix = 'Administrator', $config = [])
+  {
+    return parent::getModel($name, $prefix, ['ignore_request' => true]);
+  }
 
   /**
-	 * Method to change the state of a list of items
-   * 
-   * @param   string   $type   Name of the state to be changed
-	 *
-	 * @return  void
-	 *
-	 * @since   4.0
-	 */
-	protected function changeState($type)
-	{
-		// Check for request forgeries
-		$this->checkToken();
+   * Method to save the submitted ordering values for records via AJAX.
+   *
+   * @return  void
+   *
+   * @since   4.0.0
+   * @throws  \Exception
+   */
+  public function saveOrderAjax()
+  {
+    // Get the input
+    $input = Factory::getApplication()->input;
+    $pks   = $input->post->get('cid', [], 'array');
+    $order = $input->post->get('order', [], 'array');
 
-		// Get items to publish from the request.
-		$cid   = $this->input->get('cid', array(), 'array');
-		$task  = $this->getTask();
+    // Sanitize the input
+    ArrayHelper::toInteger($pks);
+    ArrayHelper::toInteger($order);
+
+    // Get the model
+    $model = $this->getModel();
+
+    // Save the ordering
+    $return = $model->saveorder($pks, $order);
+
+    if($return)
+    {
+      echo '1';
+    }
+
+    // Close the application
+    Factory::getApplication()->close();
+  }
+
+  /**
+   * Method to change the state of a list of items
+   *
+   * @param   string  $type  Name of the state to be changed
+   *
+   * @return  void
+   *
+   * @since   4.0
+   */
+  protected function changeState($type)
+  {
+    // Check for request forgeries
+    $this->checkToken();
+
+    // Get items to publish from the request.
+    $cid  = $this->input->get('cid', [], 'array');
+    $task = $this->getTask();
 
     switch($type)
     {
       case 'feature':
-        $data  = array('featured' => 1, 'unfeatured' => 0);
-        $msgs  = array('FEATURING', 'FEATURED', 'UNFEATURED', '', '');
-        break;
+        $data = ['featured' => 1, 'unfeatured' => 0];
+        $msgs = ['FEATURING', 'FEATURED', 'UNFEATURED', '', ''];
+          break;
 
       case 'approve':
-        $data  = array('approved' => 1, 'unapproved' => 0);
-        $msgs  = array('APPROVING', 'APPROVED', 'UNAPPROVED', '', '');
-        break;
-      
+        $data = ['approved' => 1, 'unapproved' => 0];
+        $msgs = ['APPROVING', 'APPROVED', 'UNAPPROVED', '', ''];
+          break;
+
       case 'publish':
       default:
-        $data  = array('publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3);
-        $msgs  = array('PUBLISHING', 'PUBLISHED', 'UNPUBLISHED', 'ARCHIVED', 'TRASHED');
-        break;
+        $data = ['publish' => 1, 'unpublish' => 0, 'archive' => 2, 'trash' => -2, 'report' => -3];
+        $msgs = ['PUBLISHING', 'PUBLISHED', 'UNPUBLISHED', 'ARCHIVED', 'TRASHED'];
+          break;
     }
 
     $value = ArrayHelper::getValue($data, $task, 0, 'int');
 
-		if(empty($cid))
-		{
-			$this->app->getLogger()->warning(Text::_($this->text_prefix . '_NO_ITEM_SELECTED'), array('image' => 'jerror'));
-			$this->component->addLog(Text::_($this->text_prefix . '_NO_ITEM_SELECTED' . array('image' => 'jerror')), 'warning', 'jerror');
-		}
-		else
-		{
-			// Get the model.
-			$model = $this->getModel();
+    if(empty($cid))
+    {
+      $this->app->getLogger()->warning(Text::_($this->text_prefix . '_NO_ITEM_SELECTED'), ['image' => 'jerror']);
+      // ToDo Manuel: Fix array to string conversion
+      $this->component->addLog(Text::_($this->text_prefix . '_NO_ITEM_SELECTED' . ['image' => 'jerror']), 'warning', 'jerror');
+    }
+    else
+    {
+      // Get the model.
+      $model = $this->getModel();
 
-			// Make sure the item ids are integers
-			$cid = ArrayHelper::toInteger($cid);
+      // Make sure the item ids are integers
+      $cid = ArrayHelper::toInteger($cid);
 
-			// Change the state of the items.
-			try
-			{
-				$model->changeSate($cid, $type,$value);
-				$errors = $model->getErrors();
-				$ntext = null;
+      // Change the state of the items.
+      try
+      {
+        $model->changeState($cid, $type, $value);
+        $errors = $model->getErrors();
+        $ntext  = null;
 
-				if ($value === 1)
-				{
-					if ($errors)
-					{
-						$this->app->enqueueMessage(Text::plural($this->text_prefix . '_N_ITEMS_FAILED_'.$msgs[0], \count($cid)), 'error');
-						$this->component->addLog(Text::plural($this->text_prefix . '_N_ITEMS_FAILED_'.$msgs[0], \count($cid)), 'error', 'jerror');
-					}
-					else
-					{
-						$ntext = $this->text_prefix . '_N_ITEMS_'.$msgs[1];
-					}
-				}
-				elseif ($value === 0)
-				{
-					$ntext = $this->text_prefix . '_N_ITEMS_'.$msgs[2];
-				}
-				elseif ($value === 2)
-				{
-					$ntext = $this->text_prefix . '_N_ITEMS_'.$msgs[3];
-				}
-				else
-				{
-					$ntext = $this->text_prefix . '_N_ITEMS_'.$msgs[4];
-				}
+        if($value === 1)
+        {
+          if($errors)
+          {
+            $this->app->enqueueMessage(Text::plural($this->text_prefix . '_N_ITEMS_FAILED_' . $msgs[0], \count($cid)), 'error');
+            $this->component->addLog(Text::plural($this->text_prefix . '_N_ITEMS_FAILED_' . $msgs[0], \count($cid)), 'error', 'jerror');
+          }
+          else
+          {
+            $ntext = $this->text_prefix . '_N_ITEMS_' . $msgs[1];
+          }
+        }
+        elseif($value === 0)
+        {
+          $ntext = $this->text_prefix . '_N_ITEMS_' . $msgs[2];
+        }
+        elseif($value === 2)
+        {
+          $ntext = $this->text_prefix . '_N_ITEMS_' . $msgs[3];
+        }
+        else
+        {
+          $ntext = $this->text_prefix . '_N_ITEMS_' . $msgs[4];
+        }
 
-				if (\count($cid))
-				{
-					$this->setMessage(Text::plural($ntext, \count($cid)));
-				}
-			}
-			catch (\Exception $e)
-			{
-				$this->component->addLog($e->getMessage(), 'warning', 'jerror');
-				$this->setMessage($e->getMessage(), 'error');
-			}
-		}
+        if(\count($cid))
+        {
+          $this->setMessage(Text::plural($ntext, \count($cid)));
+        }
+      }
+      catch(\Exception $e)
+      {
+        $this->component->addLog($e->getMessage(), 'warning', 'jerror');
+        $this->setMessage($e->getMessage(), 'error');
+      }
+    }
 
-		$this->setRedirect(
-			Route::_(
-				'index.php?option=' . $this->option . '&view=' . $this->view_list
-				. $this->getRedirectToListAppend(), false
-			)
-		);
-	}
+    $this->setRedirect(
+        Route::_(
+            'index.php?option=' . $this->option . '&view=' . $this->view_list
+            . $this->getRedirectToListAppend(),
+            false
+        )
+    );
+  }
 }

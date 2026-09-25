@@ -46,6 +46,7 @@ img.jg-controlpanel-logo {
 }
 .admin .modal .btn-primary {
   background-color: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-color) !important;
 }
 .modal .btn-secondary {
   color: var(--white) !important;
@@ -263,4 +264,7 @@ joomla-field-image .jg_minithumb {
 }
 .dependency.pending {
   color: var(--warning)
+}
+.exif-form > .control-group > .control-label {
+  display: none;
 }

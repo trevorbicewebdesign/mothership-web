@@ -1,26 +1,33 @@
 <?php
 /**
-******************************************************************************************
-**   @package    com_joomgallery                                                        **
-**   @subpackage plg_privacyjoomgalleryimages                                           **
-**   @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>                 **
-**   @copyright  2008 - 2025  JoomGallery::ProjectTeam                                  **
-**   @license    GNU General Public License version 3 or later                          **
-*****************************************************************************************/
+ * *********************************************************************************
+ *    @package    com_joomgallery                                                 **
+ *    @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>          **
+ *    @copyright  2008 - 2026  JoomGallery::ProjectTeam                           **
+ *    @license    GNU General Public License version 3 or later                   **
+ * *********************************************************************************
+ */
+
 namespace Joomgallery\Plugin\System\Joomgallery\Extension;
 
-\defined('_JEXEC') or die;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') || die;
+// phpcs:enable PSR1.Files.SideEffects
 
-use Joomla\Event\Event;
-use Joomla\CMS\Form\Form;
-use Joomla\Event\Priority;
-use Joomla\CMS\Plugin\CMSPlugin;
-use Joomla\Event\EventInterface;
-use Joomla\Event\SubscriberInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Helper\JoomHelper;
 use Joomla\CMS\Application\CMSApplication;
 use Joomla\CMS\Event\Model\AfterCleanCacheEvent;
 use Joomla\CMS\Event\Result\ResultAwareInterface;
-use Joomgallery\Component\Joomgallery\Administrator\Helper\JoomHelper;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Uri\Uri;
+use Joomla\Event\DispatcherAwareInterface;
+use Joomla\Event\DispatcherAwareTrait;
+use Joomla\Event\Event;
+use Joomla\Event\EventInterface;
+use Joomla\Event\Priority;
+use Joomla\Event\SubscriberInterface;
 
 /**
  * System plugin integrating JoomGallery into the CMS core
@@ -28,8 +35,10 @@ use Joomgallery\Component\Joomgallery\Administrator\Helper\JoomHelper;
  * @package JoomGallery
  * @since   4.0.0
  */
-final class Joomgallery extends CMSPlugin implements SubscriberInterface
+final class Joomgallery extends CMSPlugin implements SubscriberInterface, DispatcherAwareInterface
 {
+  use DispatcherAwareTrait;
+
   /**
    * Global database object
    *
@@ -73,7 +82,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    *
    * @since  4.0.0
    */
-  protected $allowedFormContext = array('com_users.profile', 'com_users.user', 'com_users.registration', 'com_admin.profile');
+  protected $allowedFormContext = ['com_users.profile', 'com_users.user', 'com_users.registration', 'com_admin.profile'];
 
   /**
    * Constructor
@@ -107,13 +116,13 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
         'onContentPrepareForm' => ['onContentPrepareForm', Priority::NORMAL],
         'onContentPrepareData' => ['onContentPrepareData', Priority::NORMAL],
         'onUserAfterSave'      => ['onUserAfterSave', Priority::NORMAL],
-        'onUserAfterDelete'    => ['onUserAfterDelete', Priority::NORMAL]
+        'onUserAfterDelete'    => ['onUserAfterDelete', Priority::NORMAL],
+        'onContentAfterSave'   => ['onContentAfterSave', Priority::NORMAL],
       ];
     }
-    else
-    {
-      return array();
-    }
+
+
+      return [];
   }
 
   /**
@@ -128,7 +137,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    */
   public function onContentCleanCache(Event $event)
   {
-    if(\version_compare(JVERSION, '5.0.0', '<'))
+    if(version_compare(JVERSION, '5.0.0', '<'))
     {
       // Joomla 4
       $arguments    = $event->getArguments();
@@ -141,7 +150,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
       $defaultgroup = $event->getDefaultGroup();
     }
 
-    if(\strpos($defaultgroup, 'com_joomgallery') !== 0 && \strpos($defaultgroup, 'com_users') !== 0 && \strpos($defaultgroup, 'com_menus') !== 0)
+    if(strpos($defaultgroup, 'com_joomgallery') !== 0 && strpos($defaultgroup, 'com_users') !== 0 && strpos($defaultgroup, 'com_menus') !== 0)
     {
       // Do nothing if we are not handling joomgallery content
       $this->setResult($event, true, false);
@@ -164,41 +173,41 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
         // If a configuration set is modified, delete all cache
         JoomHelper::getComponent()->createConfig();
         JoomHelper::getComponent()->getConfig()->emptyCache();
-        break;
+          break;
 
       case 'user':
         // If a user is modified, delete only usergroup cache
         $userId = $this->guessType($defaultgroup, true);
         JoomHelper::getComponent()->createConfig();
-        JoomHelper::getComponent()->getConfig()->emptyCache('user.'.$userId);
-        break;
+        JoomHelper::getComponent()->getConfig()->emptyCache('user.' . $userId);
+          break;
 
       case 'category':
         // If a category is modified, delete only category cache
         JoomHelper::getComponent()->createConfig();
         JoomHelper::getComponent()->getConfig()->emptyCache('category');
-        break;
+          break;
 
       case 'image':
         // If an image is modified, delete only image cache
         JoomHelper::getComponent()->createConfig();
         JoomHelper::getComponent()->getConfig()->emptyCache('image');
-        break;
+          break;
 
       case 'menu':
         // If an image is modified, delete only image cache
         $itemid = $this->guessType($defaultgroup, true);
         JoomHelper::getComponent()->createConfig();
-        JoomHelper::getComponent()->getConfig()->emptyCache('menu.'.$itemid);
-        break;
+        JoomHelper::getComponent()->getConfig()->emptyCache('menu.' . $itemid);
+          break;
 
       default:
         // Do nothing
-        break;
+          break;
     }
 
     // Return the result
-		$this->setResult($event, true, false);
+    $this->setResult($event, true, false);
   }
 
   /**
@@ -213,7 +222,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    */
   public function onContentPrepareForm(Event $event)
   {
-    if(\version_compare(JVERSION, '5.0.0', '<'))
+    if(version_compare(JVERSION, '5.0.0', '<'))
     {
       // Joomla 4
       [$form, $data] = $event->getArguments();
@@ -234,6 +243,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
     }
 
     $context = $form->getName();
+
     if(!\in_array($context, $this->allowedFormContext) || !$this->getApplication()->isClient('administrator'))
     {
       // Modify only forms in the backend that have the correct context
@@ -263,7 +273,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    */
   public function onContentPrepareData(Event $event)
   {
-    if(\version_compare(JVERSION, '5.0.0', '<'))
+    if(version_compare(JVERSION, '5.0.0', '<'))
     {
       // Joomla 4
       [$context, $data] = $event->getArguments();
@@ -288,7 +298,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
     {
       $userId = isset($data->id) ? $data->id : 0;
 
-      if(!isset($data->joomgallery) and $userId > 0)
+      if(!isset($data->joomgallery) && $userId > 0)
       {
         try
         {
@@ -302,10 +312,11 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
           return;
         }
 
-        $data->joomgallery = array();
+        $data->joomgallery = [];
+
         foreach($fields as $field)
         {
-          $fieldName = str_replace('joomgallery.', '', $field[0]);
+          $fieldName                     = str_replace('joomgallery.', '', $field[0]);
           $data->joomgallery[$fieldName] = json_decode($field[1], true);
 
           if($data->joomgallery[$fieldName] === null)
@@ -328,7 +339,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    */
   public function onUserAfterSave(Event $event)
   {
-    if(\version_compare(JVERSION, '5.0.0', '<'))
+    if(version_compare(JVERSION, '5.0.0', '<'))
     {
       // Joomla 4
       [$data, $isNew, $result, $error] = $event->getArguments();
@@ -337,28 +348,29 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
     {
       // Joomla 5 or newer
       extract($event->getArguments());
-      $data    = $event->getUser();
-      $result  = $event->getSavingResult();
+      $data   = $event->getUser();
+      $result = $event->getSavingResult();
     }
 
     // Save the extra input into the database
     $userId = isset($data['id']) ? (int) $data['id'] : 0;
 
-    if($userId && $result && isset($data['joomgallery']) && (count($data['joomgallery'])))
+    if($userId && $result && isset($data['joomgallery']) && (\count($data['joomgallery'])))
     {
       $options = [
-        'defaultgroup' => 'com_users.user.'.$userId,
+        'defaultgroup' => 'com_users.user.' . $userId,
         'cachebase'    => $this->app->get('cache_path', JPATH_CACHE),
         'result'       => true,
       ];
 
-      if(\version_compare(JVERSION, '5.0.0', '<'))
+      if(version_compare(JVERSION, '5.0.0', '<'))
       {
         // Joomla 4
         $cacheEvent = new Event('onContentCleanCache', $options);
 
         // Perform the onContentCleanCache event
         $this->onContentCleanCache($cacheEvent);
+
         if($cacheEvent->getArgument('error', false))
         {
           $this->setError($event, $cacheEvent->getArgument('error', ''));
@@ -383,6 +395,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
         }
 
         $ordering = 0;
+
         foreach($data['joomgallery'] as $fName => $fValue)
         {
           $this->insertField($userId, $fName, $fValue, $ordering);
@@ -410,7 +423,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    */
   public function onUserAfterDelete(Event $event)
   {
-    if(\version_compare(JVERSION, '5.0.0', '<'))
+    if(version_compare(JVERSION, '5.0.0', '<'))
     {
       // Joomla 4
       [$data, $result, $error] = $event->getArguments();
@@ -419,8 +432,8 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
     {
       // Joomla 5 or newer
       extract($event->getArguments());
-      $data    = $event->getUser();
-      $result  = $event->getDeletingResult();
+      $data   = $event->getUser();
+      $result = $event->getDeletingResult();
     }
 
     if(!$result)
@@ -451,6 +464,96 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
   }
 
   /**
+   * Event triggered after saving an item form.
+   *
+   * @param   Event   $event
+   *
+   * @return  boolean  True to continue with the storing process, false to stop it
+   *
+   * @since   4.3.0
+   */
+  public function onContentAfterSave(Event $event)
+  {
+    // J4x and J5x (5x: $context = getContext (); $table = $event->getArgument ('subject');
+    [$context, $table, $isNew, $data] = array_values($event->getArguments());
+
+    if(!\in_array($context, ['com_menus.item']) || !$this->app->isClient('administrator'))
+    {
+      return;
+    }
+
+    // Only continue when we are saving a new frontend menu item for a component
+    if($isNew && $table && $table->client_id == 0 && $table->type == 'component')
+    {
+      $uri = new Uri($table->link);
+
+      if($uri && $uri->getVar('option', '') == 'com_joomgallery' && $uri->getVar('view', '') == 'userpanel')
+      {
+        $jgmenuitems = $this->app->getMenu('site')->getItems(['component'], ['com_joomgallery']);
+
+        // Check if already a usercategories menu item exists
+        $exists = false;
+
+        foreach($jgmenuitems as $menuitem)
+        {
+          if( isset($menuitem->query['view']) && $menuitem->query['view'] == 'usercategories' &&
+              isset($menuitem->query['id']) && $menuitem->query['id'] == '1'
+            )
+          {
+            $exists = true;
+          }
+        }
+
+        // Only continue when we are saving a userpanel manu item
+        if(!$exists)
+        {
+          // Create menuitem automatically as a child of this menuitem
+          $com_menu  = $this->app->bootComponent('com_menus');
+          $new_table = $com_menu->getMVCFactory()->createTable('menu', 'administrator');
+
+          if(!$new_table)
+          {
+            return;
+          }
+
+          // Gallery menuitem
+          $data                 = [];
+          $data['id']           = null;
+          $data['parent_id']    = $table->id;
+          $data['menutype']     = $table->menutype;
+          $data['title']        = Text::_('JCATEGORIES');
+          $data['path']         = $table->path;
+          $data['language']     = $table->language;
+          $data['link']         = 'index.php?option=com_joomgallery&view=usercategories&id=1';
+          $data['type']         = $table->type;
+          $data['published']    = $table->published;
+          $data['level']        = $table->level + 1;
+          $data['component_id'] = $table->component_id;
+          $data['access']       = $table->access;
+          $data['img']          = $table->img;
+          $data['params']       = '{"menu_show":0}';
+
+          if(!$new_table->bind($data))
+          {
+            return;
+          }
+
+          $new_table->setLocation($data['parent_id'], 'last-child');
+
+          if($new_table->store($data))
+          {
+            $this->app->enqueueMessage(Text::_('PLG_SYSTEM_JOOMGALLERY_MSG_USERCATEGORIES_SUCCESS'), 'notice');
+          }
+          else
+          {
+            $this->app->enqueueMessage(Text::_('PLG_SYSTEM_JOOMGALLERY_MSG_USERCATEGORIES_FAILED'), 'notice');
+          }
+        }
+      }
+    }
+  }
+
+  /**
    * Check if JoomGallery component is installed.
    *
    * @return  int|bool   Extension id on success, false otherwise
@@ -465,9 +568,12 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
 
       $query->select('extension_id')
             ->from('#__extensions')
-            ->where( array( 'type LIKE ' . $this->db->quote('component'),
-                            'element LIKE ' . $this->db->quote('com_joomgallery')
-                          ));
+            ->where(
+                [
+                  'type LIKE ' . $this->db->quote('component'),
+                  'element LIKE ' . $this->db->quote('com_joomgallery'),
+                ]
+            );
 
       $this->db->setQuery($query);
 
@@ -492,10 +598,10 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    *
    * @since   4.0.0
    */
-  protected function guessType(string $string, $id=false)
+  protected function guessType(string $string, $id = false)
   {
     // Detect type from menuitem
-    if(\strpos($string, 'com_menus') === 0)
+    if(strpos($string, 'com_menus') === 0)
     {
       // Get menuitem id from JInput
       if(!$itemid = $this->app->input->get('id', 0, 'int'))
@@ -507,35 +613,34 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
       $menuModel = $this->app->bootComponent('com_menus')->getMVCFactory()->createModel('item', 'administrator');
       $menuItem  = $menuModel->getItem($itemid);
 
-      if(!$menuItem || \strpos($menuItem->link, 'com_joomgallery') === false)
+      if(!$menuItem || strpos($menuItem->link, 'com_joomgallery') === false)
       {
         // Menuitem is not related to joomgallery
         return false;
       }
 
       // We have a menuitem that is related to joomgallery
-      foreach(\explode('&', $menuItem->link) as $key => $value)
+      foreach(explode('&', $menuItem->link) as $key => $value)
       {
         // Read type from the link variable: 'view'
-        if(\strpos($value, 'view') !== false)
+        if(strpos($value, 'view') !== false)
         {
-          return \str_replace('view=', '', $value);
+          return str_replace('view=', '', $value);
         }
       }
     }
 
-    $pieces = \explode('.', $string);
+    $pieces = explode('.', $string);
 
     if(\count($pieces) > 1)
     {
       if($id && \count($pieces) > 2)
       {
-        return \strtolower($pieces[2]);
+        return strtolower($pieces[2]);
       }
-      else
-      {
-        return \strtolower($pieces[1]);
-      }
+
+
+        return strtolower($pieces[1]);
     }
 
     return false;
@@ -552,31 +657,31 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    *
    * @since   4.0.0
    */
-  private function setResult(Event $event, $value, $array=true): void
-	{
-		if($event instanceof ResultAwareInterface)
+  private function setResult(Event $event, $value, $array = true): void
+  {
+    if($event instanceof ResultAwareInterface)
     {
-			$event->addResult($value);
+      $event->addResult($value);
 
-			return;
-		}
+      return;
+    }
 
     if($array)
     {
       $result   = $event->getArgument('result', []) ?: [];
-		  $result   = \is_array($result) ? $result : [];
-		  $result[] = $value;
+      $result   = \is_array($result) ? $result : [];
+      $result[] = $value;
     }
     else
     {
-      $result   = $event->getArgument('result', true) ?: true;
-      $result   = ($result == false) ? false : $value;
+      $result = $event->getArgument('result', true) ?: true;
+      $result = ($result == false) ? false : $value;
     }
 
-		$event->setArgument('result', $result);
-	}
+    $event->setArgument('result', $result);
+  }
 
- /**
+  /**
    * Returns the plugin error
    *
    * @param   Event  $event    The event object
@@ -587,16 +692,15 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    * @since   4.0.0
    */
   private function setError(Event $event, $message): void
-	{
-		if($event instanceof EventInterface)
+  {
+    if($event instanceof EventInterface)
     {
-
       $event->setArgument('error', $message);
       $event->setArgument('errorMessage', $message);
 
-			return;
-		}
-	}
+      return;
+    }
+  }
 
   /**
    * Delete user fields in DB
@@ -632,8 +736,8 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    */
   protected function insertField($userId, $name, $value, $ordering)
   {
-    $columns = array('user_id', 'profile_key', 'profile_value', 'ordering');
-    $values  = array( $userId, $this->db->quote('joomgallery.' . $name), $this->db->quote($value), $ordering);
+    $columns = ['user_id', 'profile_key', 'profile_value', 'ordering'];
+    $values  = [$userId, $this->db->quote('joomgallery.' . $name), $this->db->quote($value), $ordering];
 
     $query = $this->db->getQuery(true)
         ->insert($this->db->quoteName('#__user_profiles'))
@@ -655,7 +759,7 @@ final class Joomgallery extends CMSPlugin implements SubscriberInterface
    */
   protected function getFields($userId)
   {
-    $columns = array('profile_key', 'profile_value');
+    $columns = ['profile_key', 'profile_value'];
 
     $query = $this->db->getQuery(true)
         ->select($this->db->quoteName($columns))

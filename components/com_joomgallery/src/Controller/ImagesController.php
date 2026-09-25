@@ -1,42 +1,45 @@
 <?php
 /**
-******************************************************************************************
-**   @package    com_joomgallery                                                        **
-**   @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>                 **
-**   @copyright  2008 - 2025  JoomGallery::ProjectTeam                                  **
-**   @license    GNU General Public License version 3 or later                          **
-*****************************************************************************************/
+ * *********************************************************************************
+ *    @package    com_joomgallery                                                 **
+ *    @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>          **
+ *    @copyright  2008 - 2026  JoomGallery::ProjectTeam                           **
+ *    @license    GNU General Public License version 3 or later                   **
+ * *********************************************************************************
+ */
 
 namespace Joomgallery\Component\Joomgallery\Site\Controller;
 
-// No direct access
-\defined('_JEXEC') or die;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') || die;
+// phpcs:enable PSR1.Files.SideEffects
 
-use \Joomla\CMS\MVC\Controller\FormController;
+use Joomgallery\Component\Joomgallery\Administrator\Controller\JoomFormController;
+use Joomla\CMS\Language\Text;
 
 /**
  * Images list controller class.
- * 
+ *
  * @package JoomGallery
  * @since   4.0.0
  */
-class ImagesController extends FormController
+class ImagesController extends JoomFormController
 {
-	/**
-	 * Proxy for getModel.
-	 *
-	 * @param   string  $name    The model name. Optional.
-	 * @param   string  $prefix  The class prefix. Optional
-	 * @param   array   $config  Configuration array for model. Optional
-	 *
-	 * @return  object	The model
-	 *
-	 * @since   4.0.0
-	 */
-	public function getModel($name = 'Images', $prefix = 'Site', $config = array())
-	{
-		return parent::getModel($name, $prefix, array('ignore_request' => true));
-	}
+  /**
+   * Proxy for getModel.
+   *
+   * @param   string  $name    The model name. Optional.
+   * @param   string  $prefix  The class prefix. Optional
+   * @param   array   $config  Configuration array for model. Optional
+   *
+   * @return  object  The model
+   *
+   * @since   4.0.0
+   */
+  public function getModel($name = 'Images', $prefix = 'Site', $config = [])
+  {
+    return parent::getModel($name, $prefix, ['ignore_request' => true]);
+  }
 
   /**
    * Method to save the submitted ordering values for records via AJAX.
@@ -45,7 +48,7 @@ class ImagesController extends FormController
    *
    * @since   4.0.0
    */
-  public function saveOrderAjax()
+  public function saveOrderAjax(): void
   {
     // Check for request forgeries.
     $this->checkToken();
@@ -59,8 +62,7 @@ class ImagesController extends FormController
     {
       if($pk === 0)
       {
-        unset($pks[$i]);
-        unset($order[$i]);
+        unset($pks[$i], $order[$i]);
       }
     }
 
@@ -68,14 +70,31 @@ class ImagesController extends FormController
     $model = $this->getModel('Imageform', 'Site');
 
     // Save the ordering
-    $return = $model->saveorder($pks, $order);
-
-    if($return)
-    {
-      echo '1';
-    }
+    $model->saveorder($pks, $order);
 
     // Close the application
     $this->app->close();
+  }
+
+  /**
+   * Method to clear filters from model state and user session.
+   *
+   * @return  void
+   *
+   * @since   4.4.0
+   */
+  public function clear(): void
+  {
+    // Check for request forgeries.
+    $this->checkToken();
+
+    $redirect = $this->app->getInput()->get('redirect', 'cmd');
+
+    // Get the model
+    $model = $this->getModel();
+    $model->clearFilter();
+
+    $this->app->enqueueMessage(Text::_('COM_JOOMGALLERY_MSG_FILTERS_CLEARED'), 'message');
+    $this->setRedirect('index.php?option=' . _JOOM_OPTION . '&view=' . $redirect);
   }
 }

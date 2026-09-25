@@ -2,7 +2,9 @@
 <form addfieldprefix="Joomgallery\Component\Joomgallery\Administrator\Field">
   <fieldset name="general">
     <field name="id"
-           type="text"
+           type="number"
+           filter="integer"
+           default="0"
            readonly="true"
            class="readonly"
            label="JGLOBAL_FIELD_ID_LABEL" />
@@ -42,6 +44,7 @@
 
     <field name="alias"
            type="text"
+           filter="cmd"
            maxlength="255"
            generator="title"
            label="JALIAS"
@@ -49,6 +52,7 @@
 
     <field name="parent_id"
            type="jgcategory"
+           filter="integer"
            children="false"
            default="1"
            label="JGLOBAL_SHOW_PARENT_CATEGORY_LABEL" />
@@ -74,12 +78,13 @@
            label="JGLOBAL_PASSWORD"
            description="COM_JOOMGALLERY_FIELDS_PASSWORD_DESC"
            filter="raw"
+           lock="true"
            strengthmeter="true" />
 
     <field name="rm_password"
            type="radio"
            label="COM_JOOMGALLERY_FIELDS_REMOVE_PASSWORD_LABEL"
-           description="CCOM_JOOMGALLERY_FIELDS_REMOVE_PASSWORD_DESC"
+           description="COM_JOOMGALLERY_FIELDS_REMOVE_PASSWORD_DESC"
            class="btn-group"
            default="0">
         <option value="0">JNO</option>
@@ -151,6 +156,7 @@
 
     <field name="created_by"
            type="user"
+           filter="integer"
            label="COM_JOOMGALLERY_OWNER"
            description="JGLOBAL_FIELD_CREATED_BY_DESC"
            validate="UserId" />
@@ -176,12 +182,11 @@
 
     <field name="metadesc"
            type="textarea"
-           cols="40"
-           rows="5"
            filter="safehtml"
-           label="JGLOBAL_DESCRIPTION"
-           description="JFIELD_META_DESCRIPTION_LABEL"
-           maxlength="160"
+           label="JFIELD_META_DESCRIPTION_LABEL"
+           rows="3"
+           cols="30"
+           maxlength="300"
            charcounter="true" />
 
     <field name="metakey"
@@ -211,6 +216,7 @@
 
     <field name="version_note"
            type="text"
+           filter="string"
            label="JGLOBAL_FIELD_VERSION_NOTE_LABEL"
            description="JGLOBAL_FIELD_VERSION_NOTE_DESC"
            class="inputbox"

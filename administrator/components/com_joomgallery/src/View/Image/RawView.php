@@ -1,53 +1,70 @@
 <?php
 /**
-******************************************************************************************
-**   @package    com_joomgallery                                                        **
-**   @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>                 **
-**   @copyright  2008 - 2025  JoomGallery::ProjectTeam                                  **
-**   @license    GNU General Public License version 3 or later                          **
-*****************************************************************************************/
+ * *********************************************************************************
+ *    @package    com_joomgallery                                                 **
+ *    @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>          **
+ *    @copyright  2008 - 2026  JoomGallery::ProjectTeam                           **
+ *    @license    GNU General Public License version 3 or later                   **
+ * *********************************************************************************
+ */
 
 namespace Joomgallery\Component\Joomgallery\Administrator\View\Image;
 
-// No direct access
-defined('_JEXEC') or die;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') || die;
+// phpcs:enable PSR1.Files.SideEffects
 
-use \Joomla\CMS\Router\Route;
-use \Joomgallery\Component\Joomgallery\Administrator\Helper\JoomHelper;
-use \Joomgallery\Component\Joomgallery\Administrator\View\JoomGalleryView;
+use Joomgallery\Component\Joomgallery\Administrator\Helper\JoomHelper;
+use Joomgallery\Component\Joomgallery\Administrator\Model\ImageModel;
+use Joomgallery\Component\Joomgallery\Administrator\View\JoomGalleryRawView;
+use Joomla\CMS\Language\Text;
+use Joomla\Component\Media\Administrator\Exception\InvalidPathException;
 
 /**
  * Raw view class for a single Image.
- * 
+ *
  * @package JoomGallery
  * @since   4.0.0
  */
-class RawView extends JoomGalleryView
+class RawView extends JoomGalleryRawView
 {
   /**
-	 * Raw view display method, outputs one image
-	 *
-	 * @param   string  $tpl  Template name
-	 *
-	 * @return void
-	 *
-	 * @throws \Exception
-	 */
-	public function display($tpl = null)
-	{
+   * Raw view display method, outputs one image
+   *
+   * @param   string  $tpl  Template name
+   *
+   * @return void
+   *
+   * @throws \Exception
+   */
+  public function display($tpl = null)
+  {
     // Get request variables
-    $type  = $this->app->input->get('type', 'thumbnail', 'word');
-    $id    = $this->app->input->get('id', 0);
-    if($id !== 'null') {$id = $this->app->input->get('id', 0, 'int');}
+    $type = $this->app->input->get('type', 'thumbnail', 'word');
+    $id   = $this->app->input->get('id', 0);
+
+    if($id == 0 || $id == '0')
+    {
+      $id = 'null';
+    }
+
+    if($id !== 'null')
+    {
+      $id = $this->app->input->get('id', 0, 'int');
+    }
 
     // Check access
-    if(!$this->access($id))
+    if(!$this->access($id, $type))
     {
-      $this->app->redirect(Route::_('index.php', false), 403);
+      $this->outputError(403, Text::_('COM_JOOMGALLERY_ERROR_ACCESS_VIEW'));
     }
+
+    /** @var ImageModel $model */
+    $model = $this->getModel();
 
     // Choose the filesystem adapter
     $adapter = '';
+
     if($id === 0 || $id === 'null')
     {
       // Force local-images adapter to load the no-image file
@@ -57,15 +74,22 @@ class RawView extends JoomGalleryView
     else
     {
       // Take the adapter from the image object
-      $img_obj = $this->get('Item');
+      $img_obj = $model->getItem();
       $adapter = $img_obj->filesystem;
     }
-    
+
     // Get image path
-    $img_obj ? $img = $img_obj : $img = $id;
+    if(isset($img_obj))
+    {
+      $img = $img_obj;
+    }
+    else
+    {
+      $img = $id;
+    }
     $img_path = JoomHelper::getImg($img, $type, false, false);
 
-    // Create filesystem service    
+    // Create filesystem service
     $this->component->createFilesystem($adapter);
 
     // Get image resource
@@ -75,8 +99,7 @@ class RawView extends JoomGalleryView
     }
     catch (InvalidPathException $e)
     {
-      $this->app->enqueueMessage($e, 'error');
-      $this->app->redirect(Route::_('index.php', false), 404);
+      $this->outputError(404, $e->getMessage());
     }
 
     // Create config service
@@ -85,44 +108,48 @@ class RawView extends JoomGalleryView
     // Postprocessing of the image
     if(!$this->ppImage($file_info, $resource, $type))
     {
-      $this->app->redirect(Route::_('index.php', false), 404);
-    }    
+      $this->outputError(404, 'Error postprocessing the image');
+    }
 
-    // Set mime encoding
-    $this->getDocument()->setMimeEncoding($file_info->mime_type);
+    // Increment hits counter
+    if($this->app->isClient('site'))
+    {
+      $record_hits        = (bool) $this->component->getConfig()->get('jg_record_hits', 1);
+      $record_hits_select = (array) $this->component->getConfig()->get('jg_record_hits_select');
 
-    // Set header to specify the file name
-    $this->app->setHeader('Cache-Control','no-cache, must-revalidate');
-    $this->app->setHeader('Pragma','no-cache');
-    $this->app->setHeader('Content-disposition','inline; filename='.\basename($img_path));
-    $this->app->setHeader('Content-Length',\strval($file_info->size));
+      if($record_hits && \in_array($type, $record_hits_select))
+      {
+        $model->hit();
+      }
+    }
 
-    \ob_end_clean(); //required here or large files will not work
-    \fpassthru($resource);
+    // Output
+    $this->outputResource($resource, $file_info->mime_type, $img_path, $file_info->size);
   }
 
   /**
-	 * Postprocessing the image after retrieving the image resource
-	 *
-	 * @param   \stdClass  $file_info    Object with file information
+   * Postprocessing the image after retrieving the image resource
+   *
+   * @param   \stdClass  $file_info    Object with file information
    * @param   resource   $resource     Image resource
    * @param   string     $imagetype    Type of image (original, detail, thumbnail, ...)
-	 *
-	 * @return  bool       True on success, false otherwise
-	 */
+   *
+   * @return  bool       True on success, false otherwise
+   */
   public function ppImage(&$file_info, &$resource, $imagetype)
   {
     return true;
   }
 
   /**
-	 * Check access to this image
-	 *
-	 * @param   int  $id    Image id
-	 *
-	 * @return   bool    True on success, false otherwise
-	 */
-  protected function access($id)
+   * Check access to this image
+   *
+   * @param   int     $id    Image id
+   * @param   string  $type  Imagetype
+   *
+   * @return   bool    True on success, false otherwise
+   */
+  protected function access($id, $type = 'thumbnail')
   {
     return true;
   }

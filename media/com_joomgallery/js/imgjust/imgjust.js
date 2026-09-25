@@ -16,6 +16,12 @@ class ImgJust {
 			throw "ImgJust Error: No room for images. Client width is too small."
 		const idealImgWidths = [];
 
+		// First remove the "end" and "last" classes from all images
+		for (const img of imgs) {
+			img.classList.remove("end");
+			img.classList.remove("last");
+		}
+
 		// Compute ideal 
 		for (var i = 0; i < imgs.length; i++)
 			idealImgWidths.push(imgs[i].naturalWidth * this.idealHeight / imgs[i].naturalHeight);
@@ -107,10 +113,12 @@ class ImgJust {
 			imgs[range.end].style.width = containerWidth - newRowWidth + "px";
 			imgs[range.end].style.height = newHeight + "px";
 			imgs[range.end].style.marginRight = "0";
+			imgs[range.end].classList.add("end");
 		}
 		const lastRange = rowRanges[rowRanges.length - 1];
 		for (var i = lastRange.start; i <= lastRange.end; i++)
-			imgs[i].style.marginBottom = "0";
+			imgs[i].style.marginBottom = "0",
+			imgs[i].classList.add("last");
 
 		// All done. Now make visible.
 		for (const img of imgs)

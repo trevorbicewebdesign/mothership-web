@@ -1,23 +1,25 @@
 <?php
 /**
-******************************************************************************************
-**   @package    com_joomgallery                                                        **
-**   @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>                 **
-**   @copyright  2008 - 2025  JoomGallery::ProjectTeam                                  **
-**   @license    GNU General Public License version 3 or later                          **
-*****************************************************************************************/
+ * *********************************************************************************
+ *    @package    com_joomgallery                                                 **
+ *    @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>          **
+ *    @copyright  2008 - 2026  JoomGallery::ProjectTeam                           **
+ *    @license    GNU General Public License version 3 or later                   **
+ * *********************************************************************************
+ */
 
 namespace Joomgallery\Component\Joomgallery\Administrator\View\Control;
 
-// No direct access
-defined('_JEXEC') or die;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') || die;
+// phpcs:enable PSR1.Files.SideEffects
 
-use \Joomla\CMS\Language\Text;
-use \Joomla\CMS\Toolbar\Toolbar;
-use \Joomla\CMS\Helper\ModuleHelper;
-use \Joomla\CMS\HTML\Helpers\Sidebar;
-use \Joomla\CMS\Toolbar\ToolbarHelper;
-use \Joomgallery\Component\Joomgallery\Administrator\View\JoomGalleryView;
+use Joomgallery\Component\Joomgallery\Administrator\View\JoomGalleryView;
+use Joomla\CMS\Helper\ModuleHelper;
+use Joomla\CMS\HTML\Helpers\Sidebar;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Toolbar\ToolbarHelper;
 
 /**
  * HTML View class for the control panel view
@@ -36,37 +38,40 @@ class HtmlView extends JoomGalleryView
    */
   public function display($tpl = null)
   {
-    ToolBarHelper::title(Text::_('COM_JOOMGALLERY_CONTROL_PANEL') , 'home');
+    ToolBarHelper::title(Text::_('COM_JOOMGALLERY_CONTROL_PANEL'), 'home');
+
+    /** @var ControlModel $model */
+    $model = $this->getModel();
 
     // get module positions in cpanel
     $this->modules = ModuleHelper::getModules('joom_cpanel');
 
     // get statistic data
-    $this->statisticdata = $this->get('StatisticData');
+    $this->statisticdata = $model->getStatisticData();
 
     // get gallery info data
-    $this->galleryinfodata = $this->get('GalleryInfoData');
+    $this->galleryinfodata = $model->getGalleryInfoData();
 
     // get official extensions data
-    $this->galleryofficialextensionsdata = $this->get('OfficialExtensionsData');
+    $this->galleryofficialextensionsdata = $model->getOfficialExtensionsData();
 
     // get installed extensions data
-    $this->galleryinstalledextensionsdata = $this->get('InstalledExtensionsData');
+    $this->galleryinstalledextensionsdata = $model->getInstalledExtensionsData();
 
     // get php system info
     $this->php_settings = [
-        'memory_limit'        => \ini_get('memory_limit'),
-        'upload_max_filesize' => \ini_get('upload_max_filesize'),
-        'post_max_size'       => \ini_get('post_max_size'),
-        'file_uploads'        => \ini_get('file_uploads') == '1',
-        'max_execution_time'  => \ini_get('max_execution_time'),
-        'max_input_vars'      => \ini_get('max_input_vars'),
-        // 'zlib'                => \extension_loaded('zlib'),
-        'zip'                 => \function_exists('zip_open') && \function_exists('zip_read'),
-        'gd'                  => \extension_loaded('gd'),
-        'exif'                => \extension_loaded('exif'),
-        'iconv'               => \function_exists('iconv')
-      ];
+      'memory_limit'        => \ini_get('memory_limit'),
+      'upload_max_filesize' => \ini_get('upload_max_filesize'),
+      'post_max_size'       => \ini_get('post_max_size'),
+      'file_uploads'        => \ini_get('file_uploads') == '1',
+      'max_execution_time'  => \ini_get('max_execution_time'),
+      'max_input_vars'      => \ini_get('max_input_vars'),
+      // 'zlib'                => \extension_loaded('zlib'),
+      'zip'   => \function_exists('zip_open') && \function_exists('zip_read'),
+      'gd'    => \extension_loaded('gd'),
+      'exif'  => \extension_loaded('exif'),
+      'iconv' => \function_exists('iconv'),
+    ];
 
     $this->addToolbar();
 
@@ -82,30 +87,35 @@ class HtmlView extends JoomGalleryView
    */
   protected function addToolbar()
   {
-    $toolbar = Toolbar::getInstance('toolbar');
-
-    // Images button
-    $html = '<a href="index.php?option=com_joomgallery&amp;view=images" class="btn btn-primary"><span class="icon-images" title="'.Text::_('COM_JOOMGALLERY_IMAGES').'"></span> '.Text::_('COM_JOOMGALLERY_IMAGES').'</a>';
-    $toolbar->appendButton('Custom', $html);
-
-    // Multiple add button
-    $html = '<a href="index.php?option=com_joomgallery&amp;view=image&amp;layout=upload" class="btn btn-primary"><span class="icon-upload" title="'.Text::_('Upload').'"></span> '.Text::_('Upload').'</a>';
-    $toolbar->appendButton('Custom', $html);
+    /** @var Toolbar $model */
+    $toolbar = $this->getToolbar();
 
     // Categories button
-    $html = '<a href="index.php?option=com_joomgallery&amp;view=categories" class="button-folder-open btn btn-primary"><span class="icon-folder-open" title="'.Text::_('JCATEGORIES').'"></span> '.Text::_('JCATEGORIES').'</a>';
+    $html = '<joomla-toolbar-button><a href="index.php?option=com_joomgallery&amp;view=categories" class="button-folder-open btn btn-primary"><span class="icon-folder-open" title="' . Text::_('JCATEGORIES') . '"></span> ' . Text::_('JCATEGORIES') . '</a></joomla-toolbar-button>';
+    $toolbar->appendButton('Custom', $html);
+
+    // Multiple add/upload button
+    $html = '<joomla-toolbar-button><a href="index.php?option=com_joomgallery&amp;view=image&amp;layout=upload" class="btn btn-primary"><span class="icon-upload" title="' . Text::_('Upload') . '"></span> ' . Text::_('Upload') . '</a></joomla-toolbar-button>';
+    $toolbar->appendButton('Custom', $html);
+
+    // Images button
+    $html = '<joomla-toolbar-button><a href="index.php?option=com_joomgallery&amp;view=images" class="btn btn-primary"><span class="icon-images" title="' . Text::_('COM_JOOMGALLERY_IMAGES') . '"></span> ' . Text::_('COM_JOOMGALLERY_IMAGES') . '</a></joomla-toolbar-button>';
     $toolbar->appendButton('Custom', $html);
 
     // Tags button
-    $html = '<a href="index.php?option=com_joomgallery&amp;view=tags" class="btn btn-primary"><span class="icon-tags" title="'.Text::_('COM_JOOMGALLERY_TAGS').'"></span> '.Text::_('COM_JOOMGALLERY_TAGS').'</a>';
+    $html = '<joomla-toolbar-button><a href="index.php?option=com_joomgallery&amp;view=tags" class="btn btn-primary"><span class="icon-tags" title="' . Text::_('COM_JOOMGALLERY_TAGS') . '"></span> ' . Text::_('COM_JOOMGALLERY_TAGS') . '</a></joomla-toolbar-button>';
+    $toolbar->appendButton('Custom', $html);
+
+    // Tasks button
+    $html = '<joomla-toolbar-button><a href="index.php?option=com_joomgallery&amp;view=tasks" class="btn btn-primary"><span class="fas fa-bars-progress" title="' . Text::_('COM_JOOMGALLERY_TASKS') . '"></span> ' . Text::_('COM_JOOMGALLERY_TASKS') . '</a></joomla-toolbar-button>';
     $toolbar->appendButton('Custom', $html);
 
     // Configs button
-    $html = '<a href="index.php?option=com_joomgallery&amp;view=configs" class="btn btn-primary"><span class="icon-sliders-h" title="'.Text::_('COM_JOOMGALLERY_CONFIG_SETS').'"></span> '.Text::_('COM_JOOMGALLERY_CONFIG_SETS').'</a>';
+    $html = '<joomla-toolbar-button><a href="index.php?option=com_joomgallery&amp;view=configs" class="btn btn-primary"><span class="icon-sliders-h" title="' . Text::_('COM_JOOMGALLERY_CONFIG_SETS') . '"></span> ' . Text::_('COM_JOOMGALLERY_CONFIG_SETS') . '</a></joomla-toolbar-button>';
     $toolbar->appendButton('Custom', $html);
 
     // Maintenance button
-    $html = '<a href="index.php?option=com_joomgallery&amp;view=faulties" class="btn btn-primary"><span class="icon-wrench" title="'.Text::_('COM_JOOMGALLERY_MAINTENANCE').'"></span> '.Text::_('COM_JOOMGALLERY_MAINTENANCE').'</a>';
+    $html = '<joomla-toolbar-button><a href="index.php?option=com_joomgallery&amp;view=faulties" class="btn btn-primary"><span class="icon-wrench" title="' . Text::_('COM_JOOMGALLERY_MAINTENANCE') . '"></span> ' . Text::_('COM_JOOMGALLERY_MAINTENANCE') . '</a></joomla-toolbar-button>';
     // $toolbar->appendButton('Custom', $html);
 
     if($this->getAcl()->checkACL('core.admin'))

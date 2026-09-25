@@ -1,70 +1,76 @@
 <?php
 /**
-******************************************************************************************
-**   @package    com_joomgallery                                                        **
-**   @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>                 **
-**   @copyright  2008 - 2025  JoomGallery::ProjectTeam                                  **
-**   @license    GNU General Public License version 3 or later                          **
-*****************************************************************************************/
+ * *********************************************************************************
+ *    @package    com_joomgallery                                                 **
+ *    @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>          **
+ *    @copyright  2008 - 2026  JoomGallery::ProjectTeam                           **
+ *    @license    GNU General Public License version 3 or later                   **
+ * *********************************************************************************
+ */
 
 namespace Joomgallery\Component\Joomgallery\Administrator\View\Categories;
 
-// No direct access
-defined('_JEXEC') or die;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') || die;
+// phpcs:enable PSR1.Files.SideEffects
 
-use \Joomla\CMS\Language\Text;
-use \Joomla\CMS\Toolbar\Toolbar;
-use \Joomla\CMS\Toolbar\ToolbarHelper;
-use \Joomla\CMS\HTML\Helpers\Sidebar;
-use \Joomla\Component\Content\Administrator\Extension\ContentComponent;
-use \Joomgallery\Component\Joomgallery\Administrator\View\JoomGalleryView;
+use Joomgallery\Component\Joomgallery\Administrator\View\JoomGalleryView;
+use Joomla\CMS\HTML\Helpers\Sidebar;
+use Joomla\CMS\Language\Text;
+use Joomla\CMS\MVC\View\GenericDataException;
+use Joomla\CMS\Toolbar\Toolbar;
+use Joomla\CMS\Toolbar\ToolbarHelper;
+use Joomla\Component\Content\Administrator\Extension\ContentComponent;
 
 /**
  * View class for a list of Categories.
- * 
+ *
  * @package JoomGallery
  * @since   4.0.0
  */
 class HtmlView extends JoomGalleryView
 {
-	protected $items;
+  protected $items;
 
-	protected $pagination;
+  protected $pagination;
 
-	/**
-	 * Display the view
-	 *
-	 * @param   string  $tpl  Template name
-	 *
-	 * @return void
-	 *
-	 * @throws Exception
-	 */
-	public function display($tpl = null)
-	{
-    $this->state         = $this->get('State');
-    $this->items         = $this->get('Items');		
-		$this->pagination    = $this->get('Pagination');
-		$this->filterForm    = $this->get('FilterForm');
-		$this->activeFilters = $this->get('ActiveFilters');
+  /**
+   * Display the view
+   *
+   * @param   string  $tpl  Template name
+   *
+   * @return void
+   *
+   * @throws Exception
+   */
+  public function display($tpl = null)
+  {
+    /** @var CategoriesModel $model */
+    $model = $this->getModel();
 
-		// Check for errors.
-		if(count($errors = $this->get('Errors')))
-		{
-			throw new \Exception(implode("\n", $errors));
-		}
+    $this->state         = $model->getState();
+    $this->items         = $model->getItems();
+    $this->pagination    = $model->getPagination();
+    $this->filterForm    = $model->getFilterForm();
+    $this->activeFilters = $model->getActiveFilters();
+
+    // Check for errors.
+    if(\count($errors = $model->getErrors()))
+    {
+      throw new GenericDataException(implode("\n", $errors), 500);
+    }
 
     // Preprocess the list of items to find ordering divisions.
-		foreach ($this->items as &$item)
-		{
-			$this->ordering[$item->parent_id][] = $item->id;
-		}
+    foreach($this->items as &$item)
+    {
+      $this->ordering[$item->parent_id][] = $item->id;
+    }
 
-		$this->addToolbar();
+    $this->addToolbar();
 
-		$this->sidebar = Sidebar::render();
-		parent::display($tpl);
-	}
+    $this->sidebar = Sidebar::render();
+    parent::display($tpl);
+  }
 
   /**
    * Add the page title and toolbar.
@@ -75,19 +81,20 @@ class HtmlView extends JoomGalleryView
    */
   protected function addToolbar()
   {
-    ToolbarHelper::title(Text::_('JCATEGORIES'), "folder-open");
+    ToolbarHelper::title(Text::_('JCATEGORIES'), 'folder-open');
 
-    $toolbar = Toolbar::getInstance('toolbar');
+    /** @var Toolbar $model */
+    $toolbar = $this->getToolbar();
 
     // Check if the form exists before showing the add/edit buttons
-    $formPath = JPATH_COMPONENT_ADMINISTRATOR . '/src/View/Categories';
+    $formPath = _JOOM_PATH_ADMIN . '/src/View/Categories';
 
     // Show button back to control panel
-    $html = '<a href="index.php?option=com_joomgallery&amp;view=control" class="btn btn-primary"><span class="icon-arrow-left-4" title="'.Text::_('COM_JOOMGALLERY_CONTROL_PANEL').'"></span> '.Text::_('COM_JOOMGALLERY_CONTROL_PANEL').'</a>';
+    $html = '<a href="index.php?option=com_joomgallery&amp;view=control" class="btn btn-primary"><span class="icon-arrow-left-4" title="' . Text::_('COM_JOOMGALLERY_CONTROL_PANEL') . '"></span> ' . Text::_('COM_JOOMGALLERY_CONTROL_PANEL') . '</a>';
     $toolbar->appendButton('Custom', $html);
 
     // New button
-    if(\file_exists($formPath))
+    if(file_exists($formPath))
     {
       if($this->getAcl()->checkACL('add'))
       {
@@ -106,7 +113,7 @@ class HtmlView extends JoomGalleryView
           ->icon('far fa-folder-open')
           ->buttonClass('btn btn-action')
           ->listCheck(true);
-      
+
         $batch_childBar = $batch_dropdown->getChildToolbar();
 
         // Duplicate button inside batch dropdown
@@ -135,11 +142,12 @@ class HtmlView extends JoomGalleryView
     }
 
     // Get infos for confirmation message
-    $counts = new \stdClass;
+    $counts = new \stdClass();
+
     foreach($this->items as $item)
     {
-      $counts->{$item->id} = new \stdClass;
-      $counts->{$item->id}->img_count = $item->img_count;
+      $counts->{$item->id}              = new \stdClass();
+      $counts->{$item->id}->img_count   = $item->img_count;
       $counts->{$item->id}->child_count = $item->child_count;
     }
 
@@ -149,7 +157,7 @@ class HtmlView extends JoomGalleryView
       ->listCheck(true);
 
     // Add button javascript
-    $this->deleteBtnJS  = 'var counts = '. \json_encode($counts).';';
+    $this->deleteBtnJS = 'var counts = ' . json_encode($counts) . ';';
 
     if($this->getAcl()->checkACL('core.admin'))
     {
@@ -179,21 +187,21 @@ class HtmlView extends JoomGalleryView
     Sidebar::setAction('index.php?option=com_joomgallery&view=categories');
   }
 
-	/**
-	 * Method to order fields
-	 *
-	 * @return void
-	 */
-	protected function getSortFields()
-	{
-		return array(
-			'a.`title`'      => Text::_('JGLOBAL_TITLE'),
-			'a.`parent_id`'  => Text::_('JGLOBAL_SHOW_PARENT_CATEGORY_LABEL'),
-			'a.`published`'  => Text::_('JSTATUS'),
-			'a.`access`'     => Text::_('JGRID_HEADING_ACCESS'),
-			'a.`language`'   => Text::_('JGRID_HEADING_LANGUAGE'),
-			'a.`created_by`' => Text::_('JGLOBAL_FIELD_CREATED_BY_LABEL'),
-			'a.`id`'         => Text::_('JGRID_HEADING_ID'),
-		);
-	}
+  /**
+   * Method to order fields
+   *
+   * @return void
+   */
+  protected function getSortFields()
+  {
+    return [
+      'a.`title`'      => Text::_('JGLOBAL_TITLE'),
+      'a.`parent_id`'  => Text::_('JGLOBAL_SHOW_PARENT_CATEGORY_LABEL'),
+      'a.`published`'  => Text::_('JSTATUS'),
+      'a.`access`'     => Text::_('JGRID_HEADING_ACCESS'),
+      'a.`language`'   => Text::_('JGRID_HEADING_LANGUAGE'),
+      'a.`created_by`' => Text::_('JGLOBAL_FIELD_CREATED_BY_LABEL'),
+      'a.`id`'         => Text::_('JGRID_HEADING_ID'),
+    ];
+  }
 }

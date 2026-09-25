@@ -3,12 +3,14 @@
   <fieldset name="general">
     <field name="id"
            type="text"
+           filter="integer"
            readonly="true"
            class="readonly"
            label="JGLOBAL_FIELD_ID_LABEL" />
 
     <field name="userid"
            type="user"
+           filter="integer"
            label="JGLOBAL_FIELD_USERID_LABEL"
            description="JGLOBAL_FIELD_USERID_DESC"
            validate="UserId" />
@@ -23,6 +25,7 @@
 
     <field name="alias"
            type="text"
+           filter="cmd"
            maxlength="255"
            generator="title"
            label="JALIAS"
@@ -60,6 +63,7 @@
 
     <field name="created_by"
            type="user"
+           filter="integer"
            label="COM_JOOMGALLERY_OWNER"
            description="JGLOBAL_FIELD_CREATED_BY_DESC"
            validate="UserId" />
@@ -85,12 +89,11 @@
 
     <field name="metadesc"
            type="textarea"
-           cols="40"
-           rows="5"
            filter="safehtml"
-           label="JGLOBAL_DESCRIPTION"
-           description="JFIELD_META_DESCRIPTION_LABEL"
-           maxlength="160"
+           label="JFIELD_META_DESCRIPTION_LABEL"
+           rows="3"
+           cols="30"
+           maxlength="300"
            charcounter="true" />
 
     <field name="metakey"

@@ -1,84 +1,105 @@
 <?php
 /**
-******************************************************************************************
-**   @package    com_joomgallery                                                        **
-**   @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>                 **
-**   @copyright  2008 - 2025  JoomGallery::ProjectTeam                                  **
-**   @license    GNU General Public License version 3 or later                          **
-*****************************************************************************************/
+ * *********************************************************************************
+ *    @package    com_joomgallery                                                 **
+ *    @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>          **
+ *    @copyright  2008 - 2026  JoomGallery::ProjectTeam                           **
+ *    @license    GNU General Public License version 3 or later                   **
+ * *********************************************************************************
+ */
 
 namespace Joomgallery\Component\Joomgallery\Site\View\Category;
 
-// No direct access
-defined('_JEXEC') or die;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') || die;
+// phpcs:enable PSR1.Files.SideEffects
 
-use \Joomla\CMS\Language\Text;
-use \Joomgallery\Component\Joomgallery\Site\View\JoomGalleryJsonView;
+use Joomgallery\Component\Joomgallery\Administrator\View\JoomGalleryJsonView;
+use Joomgallery\Component\Joomgallery\Site\Model\CategoryModel;
+use Joomla\CMS\Language\Text;
 
 /**
  * Json view class for a category view of Joomgallery.
- * 
+ *
  * @package JoomGallery
  * @since   4.0.0
  */
 class JsonView extends JoomGalleryJsonView
 {
   /**
-	 * The category object
-	 *
-	 * @var  \stdClass
-	 */
-	protected $item;
+   * The category object
+   *
+   * @var  \stdClass
+   */
+  protected $item;
 
   /**
-	 * Display the json view
-	 *
-	 * @param   string  $tpl  Template name
-	 *
-	 * @return void
-	 */
-	public function display($tpl = null)
-	{
-    // Current category item
-		$this->state  = $this->get('State');
+   * Display the json view
+   *
+   * @param   string  $tpl  Template name
+   *
+   * @return void
+   */
+  public function display($tpl = null)
+  {
+    /** @var CategoryModel $model */
+    $model = $this->getModel();
+
+    $this->state = $model->getState();
 
     $loaded = true;
-		try {
-			$this->item = $this->get('Item');
-		}
-		catch (\Exception $e)
-		{
-			$loaded = false;
-		}
+    try
+    {
+      $this->item = $model->getItem();
+    }
+    catch (\Exception $e)
+    {
+      $loaded = false;
+    }
 
     // Check published state
-		if($loaded && $this->item->published !== 1) 
-		{
-			$this->app->enqueueMessage(Text::_('COM_JOOMGALLERY_ERROR_UNAVAILABLE_VIEW'), 'error');
-			return;
-		}
-
-    // Check access view level
-		if(!\in_array($this->item->access, $this->user->getAuthorisedViewLevels()))
+    if($loaded && $this->item->published !== 1)
     {
-      $this->output(Text::_('COM_JOOMGALLERY_ERROR_ACCESS_VIEW'));
+      $this->output(Text::_('COM_JOOMGALLERY_ERROR_UNAVAILABLE_VIEW'));
+
       return;
     }
 
-    // Load parent category
-    $this->item->parent = $this->get('Parent');
+    // Check access view level
+    if(!\in_array($this->item->access, $this->user->getAuthorisedViewLevels()))
+    {
+      $this->output(Text::_('COM_JOOMGALLERY_ERROR_ACCESS_VIEW'));
 
-    // Load subcategories
-    $this->item->children = new \stdClass();
-    $this->item->children->items = $this->get('Children');
+      return;
+    }
 
-    // Load images
-    $this->item->images = new \stdClass();
-    $this->item->images->items = $this->get('Images');
+    // Load only if category is currently not protected
+    if(!$this->item->pw_protected)
+    {
+      // Load parent category
+      $this->item->parent = $model->getParent();
+
+      // Load subcategories
+      $this->item->children        = new \stdClass();
+      $this->item->children->items = $model->getChildren();
+
+      // Load images
+      $this->item->images        = new \stdClass();
+      $this->item->images->items = $model->getImages();
+    }
+    else
+    {
+      // Protected category
+      $this->error   = true;
+      $this->message = Text::_('COM_JOOMGALLERY_CATEGORY_PASSWORD_PROTECTED');
+      $this->output((object) []);
+
+      return;
+    }
 
     // Check for errors.
-		if(\count($errors = $this->get('Errors')))
-		{
+    if(\count($errors = $model->getErrors()))
+    {
       $this->error = true;
       $this->output($errors);
 

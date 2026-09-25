@@ -1,23 +1,25 @@
 <?php
 /**
-******************************************************************************************
-**   @package    com_joomgallery                                                        **
-**   @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>                 **
-**   @copyright  2008 - 2025  JoomGallery::ProjectTeam                                  **
-**   @license    GNU General Public License version 3 or later                          **
-*****************************************************************************************/
+ * *********************************************************************************
+ *    @package    com_joomgallery                                                 **
+ *    @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>          **
+ *    @copyright  2008 - 2026  JoomGallery::ProjectTeam                           **
+ *    @license    GNU General Public License version 3 or later                   **
+ * *********************************************************************************
+ */
 
 namespace Joomgallery\Component\Joomgallery\Administrator\Form;
 
-// No direct access
-defined('_JEXEC') or die;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') || die;
+// phpcs:enable PSR1.Files.SideEffects
 
-use \Joomla\CMS\Factory;
-use \Joomla\CMS\Form\Form;
-use \Joomla\CMS\Form\FormField;
-use \Joomla\CMS\Event\AbstractEvent;
-use \Joomla\Database\DatabaseInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Helper\ConfigHelper;
+use Joomgallery\Component\Joomgallery\Administrator\Helper\ConfigHelper;
+use Joomla\CMS\Event\AbstractEvent;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Form\Form;
+use Joomla\CMS\Form\FormField;
+use Joomla\Database\DatabaseInterface;
 
 /**
  * Form Class for the Joomla Platform.
@@ -60,15 +62,15 @@ class ConfigForm extends Form
     }
 
     // Build the result array from the found field elements.
-    foreach ($elements as $element)
+    foreach($elements as $element)
     {
       // Get the field groups for the element.
-      $attrs = $element->xpath('ancestor::fields[@name]/@name');
+      $attrs  = $element->xpath('ancestor::fields[@name]/@name');
       $groups = array_map('strval', $attrs ?: []);
-      $group = implode('.', $groups);
+      $group  = implode('.', $groups);
 
       // If the field is successfully loaded add it to the result array.
-      if ($field = $this->loadField($element, $group))
+      if($field = $this->loadField($element, $group))
       {
         $fields[$field->id] = $field;
       }
@@ -98,15 +100,15 @@ class ConfigForm extends Form
     }
 
     // Build the result array from the found field elements.
-    foreach ($elements as $element)
+    foreach($elements as $element)
     {
       // Get the field groups for the element.
-      $attrs = $element->xpath('ancestor::fields[@name]/@name');
+      $attrs  = $element->xpath('ancestor::fields[@name]/@name');
       $groups = array_map('strval', $attrs ?: []);
-      $group = implode('.', $groups);
+      $group  = implode('.', $groups);
 
       // If the field is successfully loaded add it to the result array.
-      if ($field = $this->loadField($element, $group))
+      if($field = $this->loadField($element, $group))
       {
         $fields[$field->id] = $field;
       }
@@ -118,7 +120,7 @@ class ConfigForm extends Form
   /**
    * Method to add field options provided by a script.
    * Script name provided in the field attribute 'script'.
-   * 
+   *
    * @param   FormField|string  $name   The name of the field for which to set the value.
    * @param   string            $group  The optional dot-separated form group path on which to find the field.
    *
@@ -136,6 +138,7 @@ class ConfigForm extends Form
 
     // Get script
     $script = $field->getAttribute('script', '');
+
     if(empty($script))
     {
       return false;
@@ -143,27 +146,27 @@ class ConfigForm extends Form
 
     // Load options
       // Option 1: Plugin listening to onJoomGetOptions
-      $event = AbstractEvent::create(
-                    'onJoomGetOptions',
-                    [
-                      'subject' => $this,
-                      'context' => 'com_joomgallery.config.form',
-                      'script'  => $script,
-                    ]
-      );
+    $event = AbstractEvent::create(
+        'onJoomGetOptions',
+        [
+          'subject' => $this,
+          'context' => 'com_joomgallery.config.form',
+          'script'  => $script,
+        ]
+    );
       Factory::getApplication()->getDispatcher()->dispatch($event->getName(), $event);
-      $options = $event->getArgument('result', array());
+      $options = $event->getArgument('result', []);
 
       // Option 2: Load script from ConfigHelper
-      if(\method_exists('\Joomgallery\Component\Joomgallery\Administrator\Helper\ConfigHelper', $script))
+      if(method_exists('\Joomgallery\Component\Joomgallery\Administrator\Helper\ConfigHelper', $script))
       {
-        $options = \array_merge($options, ConfigHelper::{$script}($this));
+        $options = array_merge($options, ConfigHelper::{$script}($this));
       }
 
     // Add options to field
     foreach($options as $key => $option)
     {
-      $field->addOption($option['text'], array('value'=>$option['value']));
+      $field->addOption($option['text'], ['value' => $option['value']]);
     }
   }
 
@@ -181,7 +184,7 @@ class ConfigForm extends Form
     // Make sure there is a valid Form XML document.
     if(!($this->xml instanceof \SimpleXMLElement))
     {
-      throw new \UnexpectedValueException(sprintf('%s::%s `xml` is not an instance of SimpleXMLElement', \get_class($this), __METHOD__));
+      throw new \UnexpectedValueException(\sprintf('%s::%s `xml` is not an instance of SimpleXMLElement', \get_class($this), __METHOD__));
     }
 
     /*
@@ -210,7 +213,7 @@ class ConfigForm extends Form
     // Make sure there is a valid Form XML document.
     if(!($this->xml instanceof \SimpleXMLElement))
     {
-      throw new \UnexpectedValueException(sprintf('%s::%s `xml` is not an instance of SimpleXMLElement', \get_class($this), __METHOD__));
+      throw new \UnexpectedValueException(\sprintf('%s::%s `xml` is not an instance of SimpleXMLElement', \get_class($this), __METHOD__));
     }
 
     /*
@@ -235,7 +238,6 @@ class ConfigForm extends Form
    * @return  ConfigForm  Form instance.
    *
    * @since   4.0.0
-   * @deprecated  5.0 Use the FormFactory service from the container
    * @throws  \InvalidArgumentException if no data provided.
    * @throws  \RuntimeException if the form could not be loaded.
    */
@@ -251,7 +253,7 @@ class ConfigForm extends Form
 
         if(empty($data))
         {
-          throw new \InvalidArgumentException(sprintf('%1$s(%2$s, *%3$s*)', __METHOD__, $name, \gettype($data)));
+          throw new \InvalidArgumentException(\sprintf('%1$s(%2$s, *%3$s*)', __METHOD__, $name, \gettype($data)));
         }
 
         // Instantiate the form.
@@ -263,14 +265,14 @@ class ConfigForm extends Form
         {
           if($forms[$name]->load($data, $replace, $xpath) == false)
           {
-            throw new \RuntimeException(sprintf('%s() could not load form', __METHOD__));
+            throw new \RuntimeException(\sprintf('%s() could not load form', __METHOD__));
           }
         }
         else
         {
           if($forms[$name]->loadFile($data, $replace, $xpath) == false)
           {
-            throw new \RuntimeException(sprintf('%s() could not load file', __METHOD__));
+            throw new \RuntimeException(\sprintf('%s() could not load file', __METHOD__));
           }
         }
       }

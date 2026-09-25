@@ -41,6 +41,15 @@
       }
     },
     {
+      "name": "com_joomgallery.tasks",
+      "type": "script",
+      "uri": "com_joomgallery/tasks/dist/tasks.js",
+      "attributes": {
+        "type": "module",
+        "defer": true
+      }
+    },
+    {
       "name": "com_joomgallery.catBtns",
       "type": "script",
       "uri": "com_joomgallery/catBtns.js",
@@ -102,9 +111,25 @@
       }
     },
     {
+      "name": "com_joomgallery.lg-hash",
+      "type": "script",
+      "uri": "com_joomgallery/lg-hash.min.js",
+      "attributes": {
+        "defer": false
+      }
+    },
+    {
       "name": "com_joomgallery.lg-thumbnail",
       "type": "script",
       "uri": "com_joomgallery/lg-thumbnail.min.js",
+      "attributes": {
+        "defer": false
+      }
+    },
+    {
+      "name": "com_joomgallery.lg-zoom",
+      "type": "script",
+      "uri": "com_joomgallery/lg-zoom.min.js",
       "attributes": {
         "defer": false
       }

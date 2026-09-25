@@ -1,25 +1,27 @@
 <?php
 /**
-******************************************************************************************
-**   @package    com_joomgallery                                                        **
-**   @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>                 **
-**   @copyright  2008 - 2025  JoomGallery::ProjectTeam                                  **
-**   @license    GNU General Public License version 3 or later                          **
-*****************************************************************************************/
+ * *********************************************************************************
+ *    @package    com_joomgallery                                                 **
+ *    @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>          **
+ *    @copyright  2008 - 2026  JoomGallery::ProjectTeam                           **
+ *    @license    GNU General Public License version 3 or later                   **
+ * *********************************************************************************
+ */
 
-// No direct access 
-defined('_JEXEC') or die;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') || die;
+// phpcs:enable PSR1.Files.SideEffects
 
 use Joomla\CMS\Factory;
-use Joomla\CMS\Router\Route;
-use Joomla\CMS\Language\Text;
 use Joomla\CMS\HTML\HTMLHelper;
+use Joomla\CMS\Language\Text;
 use Joomla\CMS\Layout\FileLayout;
+use Joomla\CMS\Router\Route;
 
 // Import CSS & JS
 $wa = $this->document->getWebAssetManager();
 $wa->useScript('keepalive')
-	 ->useScript('form.validate')
+   ->useScript('form.validate')
    ->useScript('com_joomgallery.uppy-uploader')
    ->useScript('bootstrap.modal')
    ->useStyle('com_joomgallery.uppy')
@@ -42,7 +44,7 @@ Text::script('JGLOBAL_VALIDATION_FORM_FAILED');
 Text::script('COM_JOOMGALLERY_UPLOADING');
 Text::script('COM_JOOMGALLERY_SAVING');
 Text::script('COM_JOOMGALLERY_WAITING');
-Text::script('COM_JOOMGALLERY_DEBUG_INFORMATION'); 
+Text::script('COM_JOOMGALLERY_DEBUG_INFORMATION');
 Text::script('COM_JOOMGALLERY_FILE_TITLE_HINT');
 Text::script('COM_JOOMGALLERY_FILE_DESCRIPTION_HINT');
 Text::script('COM_JOOMGALLERY_FILE_AUTHOR_HINT');
@@ -52,7 +54,7 @@ Text::script('COM_JOOMGALLERY_ERROR_UPPY_FORM');
 Text::script('COM_JOOMGALLERY_ERROR_UPPY_SAVE_RECORD');
 Text::script('COM_JOOMGALLERY_ERROR_FILL_REQUIRED_FIELDS');
 
-$wa->addInlineScript('window.uppyVars = JSON.parse(\''. json_encode($this->js_vars) . '\');', ['position' => 'before'], [], ['com_joomgallery.uppy-uploader']);
+$wa->addInlineScript('window.uppyVars = JSON.parse(\'' . json_encode($this->js_vars) . '\');', ['position' => 'before'], [], ['com_joomgallery.uppy-uploader']);
 ?>
 
 <div class="jg jg-upload">
@@ -74,6 +76,9 @@ $wa->addInlineScript('window.uppyVars = JSON.parse(\''. json_encode($this->js_va
           <div class="card-body">
             <?php echo $this->form->renderField('debug'); ?>
           </div>
+          <div>
+            <?php DisplaySystemSettings($this->uploadLimit, $this->postMaxSize, $this->memoryLimit, $this->mediaSize, $this->maxSize); ?>
+          </div>
         </div>
       </div>
       <div class="col card">
@@ -84,11 +89,11 @@ $wa->addInlineScript('window.uppyVars = JSON.parse(\''. json_encode($this->js_va
           <p>
             <?php
               $displayData = [
-                  'description' => Text::_('COM_JOOMGALLERY_GENERIC_UPLOAD_DATA'),
-                  'id'          => 'adminForm-desc',
-                  'small'       => true
+                'description' => Text::_('COM_JOOMGALLERY_GENERIC_UPLOAD_DATA'),
+                'id'          => 'adminForm-desc',
+                'small'       => true,
               ];
-              $renderer = new FileLayout('joomgallery.tip');
+              $renderer    = new FileLayout('joomgallery.tip');
             ?>
             <?php echo $renderer->render($displayData); ?>
           </p>
@@ -123,3 +128,95 @@ $wa->addInlineScript('window.uppyVars = JSON.parse(\''. json_encode($this->js_va
   </form>
   <div id="popup-area"></div>
 </div>
+
+<?php
+/**
+ * Display system settings as collapsed
+ *
+ * Parameter: limits in megabytes, created in viewhtml.php
+ *
+ * @param   int  $UploadLimit  php setting 'upload_max_filesize'
+ * @param   int  $PostMaxSize  php setting 'post_max_size'
+ * @param   int  $MemoryLimit  php setting 'memory_limit'
+ * @param   int  $mediaSize    upload limit by joomgallery / joomla media configuration
+ * @param   int  $maxSize      Min of above
+ *
+ * @since 4.1.0
+ */
+function DisplaySystemSettings($UploadLimit, $PostMaxSize, $MemoryLimit, $mediaSize, $maxSize)
+{
+  $title  = Text::sprintf('COM_JOOMGALLERY_UPLOAD_LIMIT_CALCULATED', $maxSize);
+  $id     = 127000;
+  $itemId = 127001;
+  ?>
+
+  <div class="card">
+    <div class="accordion" id="<?php echo $id; ?>">
+      <div class="accordion-item">
+        <h2 class="accordion-header" id="<?php echo $itemId; ?>Header">
+          <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                  data-bs-target="#<?php echo $itemId; ?>" aria-expanded="false" aria-controls="<?php echo $itemId; ?>">
+            <?php echo Text::_($title); ?>
+          </button>
+        </h2>
+        <div id="<?php echo $itemId; ?>" class="accordion-collapse collapse"
+             aria-labelledby="<?php echo $itemId; ?>Header" data-bs-parent="#<?php echo $id; ?>">
+          <div class="accordion-body">
+            <table class="table table-striped">
+              <tbody>
+                <tr>
+                  <td class="d-md-table-cell">
+                    <?php echo Text::sprintf('COM_JOOMGALLERY_UPLOAD_UPLOAD_LIMIT_IS'); ?>
+                  </td>
+                  <td class="d-md-table-cell px-0 text-end">
+                    <strong><?php echo $UploadLimit; ?></strong>
+                  </td>
+                  <td class="d-md-table-cell ps-1  text-start">
+                    MB (PHP 'upload_max_filesize')
+                  </td>
+                </tr>
+                <tr>
+                  <td class="d-md-table-cell">
+                    <?php echo Text::sprintf('COM_JOOMGALLERY_UPLOAD_POST_MAX_SIZE_IS'); ?>
+                  </td>
+                  <td class="d-md-table-cell px-0 text-end">
+                    <strong><?php echo $PostMaxSize; ?></strong>
+                  </td>
+                  <td class="d-md-table-cell ps-1 text-start">
+                    MB (PHP 'post_max_size')
+                  </td>
+                </tr>
+                <tr>
+                  <td class="d-md-table-cell">
+                    <?php echo Text::sprintf('COM_JOOMGALLERY_UPLOAD_POST_MEMORY_LIMIT_IS'); ?>
+                  </td>
+                  <td class="d-md-table-cell px-0 text-end">
+                    <strong><?php echo $MemoryLimit; ?></strong>
+                  </td>
+                  <td class="d-md-table-cell ps-1  text-start">
+                    MB (PHP 'memory_limit')
+                  </td>
+                </tr>
+                <tr>
+                  <td class="d-md-table-cell">
+                    <?php echo Text::sprintf('COM_JOOMGALLERY_UPLOAD_MEDIA_LIMIT_IS', $mediaSize); ?>
+                  </td>
+                  <td class="d-md-table-cell px-0 text-end">
+                    <strong><?php echo $mediaSize; ?></strong>
+                  </td>
+                  <td class="d-md-table-cell ps-1 text-start">
+                    MB
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <?php return;
+}
+?>

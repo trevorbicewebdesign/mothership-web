@@ -1,52 +1,59 @@
 <?php
 /**
-******************************************************************************************
-**   @package    com_joomgallery                                                        **
-**   @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>                 **
-**   @copyright  2008 - 2025  JoomGallery::ProjectTeam                                  **
-**   @license    GNU General Public License version 3 or later                          **
-*****************************************************************************************/
+ * *********************************************************************************
+ *    @package    com_joomgallery                                                 **
+ *    @author     JoomGallery::ProjectTeam <team@joomgalleryfriends.net>          **
+ *    @copyright  2008 - 2026  JoomGallery::ProjectTeam                           **
+ *    @license    GNU General Public License version 3 or later                   **
+ * *********************************************************************************
+ */
 
 namespace Joomgallery\Component\Joomgallery\Administrator\Extension;
 
-// No direct access
-\defined('_JEXEC') or die;
+// phpcs:disable PSR1.Files.SideEffects
+\defined('_JEXEC') || die;
+// phpcs:enable PSR1.Files.SideEffects
 
-use \Joomla\CMS\Factory;
-use \Joomla\CMS\Filesystem\Path;
-use \Joomla\CMS\Menu\AbstractMenu;
-use \Psr\Container\ContainerInterface;
-use \Joomla\CMS\Extension\MVCComponent;
-use \Joomla\CMS\HTML\HTMLRegistryAwareTrait;
-use \Joomla\CMS\Fields\FieldsServiceInterface;
-use \Joomla\CMS\Component\Router\RouterInterface;
-use \Joomla\CMS\Application\CMSApplicationInterface;
-use \Joomla\CMS\Association\AssociationServiceInterface;
-use \Joomla\CMS\Association\AssociationServiceTrait;
-use \Joomla\CMS\Component\Router\RouterServiceInterface;
-use \Joomla\CMS\Component\Router\RouterServiceTrait;
-use \Joomla\CMS\Extension\BootableExtensionInterface;
-use \Joomgallery\Component\Joomgallery\Site\Service\JG3Router;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Access\AccessServiceInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Access\AccessServiceTrait;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Config\ConfigServiceInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Config\ConfigServiceTrait;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\FileManager\FileManagerServiceInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\FileManager\FileManagerServiceTrait;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Filesystem\FilesystemServiceInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Filesystem\FilesystemServiceTrait;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\IMGtools\IMGtoolsServiceInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\IMGtools\IMGtoolsServiceTrait;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Messenger\MessengerServiceTraitInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Messenger\MessengerServiceTrait;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Refresher\RefresherServiceInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Refresher\RefresherServiceTrait;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\TusServer\TusServiceInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\TusServer\TusServiceTrait;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Uploader\UploaderServiceInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Uploader\UploaderServiceTrait;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Migration\MigrationServiceInterface;
-use \Joomgallery\Component\Joomgallery\Administrator\Service\Migration\MigrationServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Access\AccessServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Access\AccessServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Config\ConfigServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Config\ConfigServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\FileManager\FileManagerServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\FileManager\FileManagerServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Filesystem\FilesystemServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Filesystem\FilesystemServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\IMGtools\IMGtoolsServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\IMGtools\IMGtoolsServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Messenger\MessengerServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Messenger\MessengerServiceTraitInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Metadata\MetadataServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Metadata\MetadataServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Migration\MigrationServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Migration\MigrationServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Refresher\RefresherServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Refresher\RefresherServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Search\SearchServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Search\SearchServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\TusServer\TusServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\TusServer\TusServiceTrait;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Uploader\UploaderServiceInterface;
+use Joomgallery\Component\Joomgallery\Administrator\Service\Uploader\UploaderServiceTrait;
+use Joomgallery\Component\Joomgallery\Site\Service\JG3Router;
+use Joomla\CMS\Application\CMSApplicationInterface;
+use Joomla\CMS\Association\AssociationServiceInterface;
+use Joomla\CMS\Association\AssociationServiceTrait;
+use Joomla\CMS\Component\Router\RouterInterface;
+use Joomla\CMS\Component\Router\RouterServiceInterface;
+use Joomla\CMS\Component\Router\RouterServiceTrait;
+use Joomla\CMS\Extension\BootableExtensionInterface;
+use Joomla\CMS\Extension\ExtensionHelper;
+use Joomla\CMS\Extension\MVCComponent;
+use Joomla\CMS\Factory;
+use Joomla\CMS\Fields\FieldsServiceInterface;
+use Joomla\CMS\HTML\HTMLRegistryAwareTrait;
+use Joomla\CMS\Menu\AbstractMenu;
+use Joomla\Filesystem\Path;
+use Psr\Container\ContainerInterface;
 
 /**
  * Component class for Joomgallery
@@ -57,10 +64,11 @@ use \Joomgallery\Component\Joomgallery\Administrator\Service\Migration\Migration
 class JoomgalleryComponent extends MVCComponent implements BootableExtensionInterface, RouterServiceInterface, FieldsServiceInterface
 {
   use MessageTrait;
-	use AssociationServiceTrait;
-	use HTMLRegistryAwareTrait;
-  // use RouterServiceTrait;
-  use RouterServiceTrait {RouterServiceTrait::createRouter as traitCreateRouter;}
+  use AssociationServiceTrait;
+  use HTMLRegistryAwareTrait;
+  use RouterServiceTrait {
+    RouterServiceTrait::createRouter as traitCreateRouter;
+  }
 
   /**
    * JoomGallery services
@@ -70,7 +78,6 @@ class JoomgalleryComponent extends MVCComponent implements BootableExtensionInte
    * $component = $app->bootComponent(_JOOM_OPTION); // boot JoomGallery component
    * $component->create<SERVICENAME>('<VARIANT>');   // instantiate new class with specified variant of the service
    * $component->get<SERVICENAME>()-><METHOD>();     // execute method of service class
-   *
    */
   use AccessServiceTrait;
   use ConfigServiceTrait;
@@ -78,7 +85,9 @@ class JoomgalleryComponent extends MVCComponent implements BootableExtensionInte
   use FilesystemServiceTrait;
   use IMGtoolsServiceTrait;
   use MessengerServiceTrait;
+  use MetadataServiceTrait;
   use RefresherServiceTrait;
+  use SearchServiceTrait;
   use TusServiceTrait;
   use UploaderServiceTrait;
   use MigrationServiceTrait;
@@ -105,20 +114,27 @@ class JoomgalleryComponent extends MVCComponent implements BootableExtensionInte
   public $version = '';
 
   /**
-	 * Booting the extension. This is the function to set up the environment of the extension like
-	 * registering new class loaders, etc.
-	 *
-	 * If required, some initial set up can be done from services of the container, eg.
-	 * registering HTML services.
-	 *
-	 * @param   ContainerInterface  $container  The container
-	 *
-	 * @return  void
+   * Storage for the current component version
    *
-	 * @since   4.0.0
-	 */
+   * @var object
+   */
+  public $extension = null;
+
+  /**
+   * Booting the extension. This is the function to set up the environment of the extension like
+   * registering new class loaders, etc.
+   *
+   * If required, some initial set up can be done from services of the container, eg.
+   * registering HTML services.
+   *
+   * @param   ContainerInterface  $container  The container
+   *
+   * @return  void
+   *
+   * @since   4.0.0
+   */
   public function boot(ContainerInterface $container)
- 	{
+  {
     // JoomGallery definitions
     if(!\defined('_JOOM_OPTION'))
     {
@@ -134,13 +150,19 @@ class JoomgalleryComponent extends MVCComponent implements BootableExtensionInte
     // Load component manifest xml
     if(!$this->xml)
     {
-      $this->xml  = \simplexml_load_file(Path::clean(JPATH_ADMINISTRATOR . '/components/com_joomgallery/joomgallery.xml'));
+      $this->xml = simplexml_load_file(Path::clean(JPATH_ADMINISTRATOR . '/components/com_joomgallery/joomgallery.xml'));
     }
 
     // Read out component version
     if(!$this->version)
     {
       $this->version = (string) $this->xml->version;
+    }
+
+    // Load component object from #__extensions table
+    if(!$this->extension)
+    {
+      $this->extension = ExtensionHelper::getExtensionRecord(_JOOM_OPTION, 'component');
     }
   }
 
@@ -161,18 +183,16 @@ class JoomgalleryComponent extends MVCComponent implements BootableExtensionInte
     $routerName = $this->getConfig()->get('jg_router', 'DefaultRouter');
 
     // Get router
-    $router = 'Joomgallery\\Component\\Joomgallery\\Site\\Service\\' . \ucfirst($routerName);
-    
+    $router = 'Joomgallery\\Component\\Joomgallery\\Site\\Service\\' . ucfirst($routerName);
+
     if($router::$type == 'modern')
     {
       // Use a modern router (RouterView)
       return $this->traitCreateRouter($application, $menu);
     }
-    else
-    {
-      // Use a legacy router
-      return new $router($application, $menu);
-    }
+
+    // Use a legacy router
+    return new $router($application, $menu);
   }
 
   /**
@@ -193,11 +213,13 @@ class JoomgalleryComponent extends MVCComponent implements BootableExtensionInte
       {
         case 'image':
         case 'imageform':
+        case 'userimage':
             return 'image';
 
         case 'category':
         case 'categoryform':
-          return 'category';
+        case 'usercategory':
+            return 'category';
       }
     }
 
@@ -222,8 +244,11 @@ class JoomgalleryComponent extends MVCComponent implements BootableExtensionInte
     $language = Factory::getApplication()->getLanguage();
     $language->load('com_joomgallery', JPATH_ADMINISTRATOR);
 
-    return [ 'com_joomgallery.image' => $language->_('COM_JOOMGALLERY_IMAGES'),
-             'com_joomgallery.category' => $language->_('JCATEGORIES'),
-           ];
+    return [
+      'com_joomgallery.image'        => $language->_('COM_JOOMGALLERY_IMAGES'),
+      'com_joomgallery.category'     => $language->_('JCATEGORIES'),
+      'com_joomgallery.userimage'    => $language->_('COM_JOOMGALLERY_IMAGES'),
+      'com_joomgallery.usercategory' => $language->_('JCATEGORIES'),
+    ];
   }
 }
