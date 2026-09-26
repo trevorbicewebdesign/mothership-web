@@ -44,3 +44,15 @@ Desktop.ini
 /.vscode/
 
 /pdf-kit/
+
+# ---------------------------------------------------------------------------
+# Test tooling (development only, never deployed)
+# The suite itself is tracked; what it downloads, generates or dumps is not.
+# ---------------------------------------------------------------------------
+/vendor/
+/composer.lock
+/tests/_output/
+/tests/.env
+/tests/_support/_generated/
+# Holds a copy of real site data: keep it off the server and out of git.
+/tests/_support/Data/db/*.sql
